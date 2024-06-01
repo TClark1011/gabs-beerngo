@@ -11,6 +11,10 @@ export default defineConfig({
 		VitePWA({
 			registerType: "autoUpdate",
 			manifest: {
+				name: "GABs Beerngo",
+				short_name: "Beerngo",
+				description: "Play some Beerngo with your buds",
+				background_color: "#1A202C",
 				theme_color: "#1A202C",
 				icons: [
 					{
