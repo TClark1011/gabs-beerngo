@@ -38,3 +38,21 @@ export const pickNRandomItemsThatSatisfy = <T>(
 	const shuffledSatisfyingItems = shuffleArray(satisfyingItems);
 	return pickFirstNItems(shuffledSatisfyingItems, n);
 };
+
+export const splitArrayBy = <T>(
+	array: T[],
+	checker: (value: T) => boolean,
+): [true: T[], false: T[]] => {
+	const truthy: T[] = [];
+	const falsy: T[] = [];
+
+	array.forEach((value) => {
+		if (checker(value)) {
+			truthy.push(value);
+		} else {
+			falsy.push(value);
+		}
+	});
+
+	return [truthy, falsy];
+};

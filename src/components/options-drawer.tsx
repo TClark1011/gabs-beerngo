@@ -50,6 +50,21 @@ export const OptionsDrawer: FC = () => {
 							onClick={() => {
 								if (
 									window.confirm(
+										"WARNING: This will reset all data, it cannot be undone. Are you sure?",
+									)
+								) {
+									localStorage.clear();
+									window.location.reload();
+								}
+							}}
+							colorScheme="red"
+						>
+							Reset Data
+						</Button>
+						<Button
+							onClick={() => {
+								if (
+									window.confirm(
 										"Are you sure you want to generate a new board?",
 									)
 								) {
@@ -58,18 +73,6 @@ export const OptionsDrawer: FC = () => {
 							}}
 						>
 							Get New Board
-						</Button>
-						<Button
-							onClick={() => {
-								if (
-									window.confirm("Are you sure you want to reset the data?")
-								) {
-									localStorage.clear();
-									window.location.reload();
-								}
-							}}
-						>
-							Reset Data
 						</Button>
 					</Flex>
 					<Divider my="8" />

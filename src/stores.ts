@@ -3,8 +3,7 @@ import { atom } from "jotai";
 import { BingoBoard } from "@/types";
 import { generateBingoBoard, unsafeGetBeerWithId } from "@/utils/bingo-helpers";
 import { produce } from "immer";
-import { BEERS, BOARD_TILES } from "@/constants/data";
-import { pickNRandomItems } from "@/utils/misc";
+import { BEERS } from "@/constants/data";
 
 export const previouslyPlayedBeerIdsAtom = atomWithStorage<number[]>(
 	"already-played-beer-ids",
@@ -47,7 +46,9 @@ export const toggleBeerIdPlayedAtom = atom(null, (get, set, beerId: number) => {
 
 export const bingoBoardAtom = atomWithStorage<BingoBoard>(
 	"bingo-board",
-	generateBingoBoard(),
+	generateBingoBoard({
+		playedBeerIds: [],
+	}),
 );
 
 export const bingoBoardTilesAtom = atom((get) => {
@@ -59,36 +60,12 @@ export const bingoBoardTilesAtom = atom((get) => {
 });
 
 export const regenerateBoardAtom = atom(null, (get, set) => {
-	const unplayedBeerIds = get(unplayedBeerIdsAtom);
-
-	const selectedBeerIds = pickNRandomItems(unplayedBeerIds, BOARD_TILES);
-
-	const haveEnoughUnplayedBeers = selectedBeerIds.length >= BOARD_TILES;
-
-	if (!haveEnoughUnplayedBeers) {
-		const playedBeerIds = get(previouslyPlayedBeerIdsAtom);
-		const extraBeerIds = pickNRandomItems(
-			playedBeerIds,
-			BOARD_TILES - selectedBeerIds.length,
-		);
-		const finalBeerIds = [...selectedBeerIds, ...extraBeerIds];
-		set(bingoBoardAtom, {
-			tiles: finalBeerIds.map((beerId, index) => ({
-				beerId,
-				index,
-				checked: false,
-			})),
-		});
-		return;
-	}
-
-	set(bingoBoardAtom, {
-		tiles: selectedBeerIds.map((beerId, index) => ({
-			beerId,
-			index,
-			checked: false,
-		})),
-	});
+	set(
+		bingoBoardAtom,
+		generateBingoBoard({
+			playedBeerIds: get(previouslyPlayedBeerIdsAtom),
+		}),
+	);
 });
 
 export const beerIdIsCheckedAtom = (beerId: number) =>

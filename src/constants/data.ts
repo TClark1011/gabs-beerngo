@@ -4,6 +4,10 @@ export const BOARD_DIMENSION = 5;
 
 export const BOARD_TILES = BOARD_DIMENSION ** 2;
 
+export const HARRY_CHOICE_QUOTA = 5;
+// how many of harry's choices should be required
+// in each board
+
 export const BEERS: Beer[] = [
 	{
 		"id": 1,

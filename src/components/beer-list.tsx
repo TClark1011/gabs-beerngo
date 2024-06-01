@@ -2,13 +2,14 @@ import { BEERS } from "@/constants/data";
 import { infoModalTargetBeerIdAtom } from "@/stores";
 import { Beer } from "@/types";
 import { matchesSearchQuery } from "@/utils/misc";
-import { InfoIcon } from "@chakra-ui/icons";
+import { InfoIcon, StarIcon } from "@chakra-ui/icons";
 import {
 	Button,
 	Checkbox,
 	Flex,
 	IconButton,
 	Stack,
+	Text,
 	useColorModeValue,
 } from "@chakra-ui/react";
 import { useAtom, useSetAtom } from "jotai";
@@ -40,6 +41,7 @@ const BeerRow: FC<{
 				whiteSpace="normal"
 				h="max-content"
 				py="4"
+				px="4"
 				gap="2"
 				flexGrow={1}
 			>
@@ -48,8 +50,12 @@ const BeerRow: FC<{
 					isChecked={hasBeenPlayed}
 					pointerEvents="none"
 					tabIndex={-1}
+					flexShrink={0}
 				/>
-				{beer.id}. {beer.name}
+				<Text flexGrow={1}>
+					{beer.id}. {beer.name}
+				</Text>
+				{beer.harry && <StarIcon flexShrink={0} />}
 			</Button>
 			<IconButton
 				aria-label="View Beer Info"
