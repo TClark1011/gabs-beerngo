@@ -25,8 +25,6 @@ export const generateBingoBoard = ({
 		beerIsHarryChoice,
 	);
 
-	console.log("(bingo-helpers): ", { harryBeers });
-
 	const harryBeerIds = harryBeers.map((beer) => beer.id);
 	const nonHarryBeerIds = nonHarryBeers.map((beer) => beer.id);
 
