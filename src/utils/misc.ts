@@ -56,3 +56,18 @@ export const splitArrayBy = <T>(
 
 	return [truthy, falsy];
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const memoize = <Fn extends (...args: any[]) => any>(fn: Fn): Fn => {
+	const cache = new Map<string, ReturnType<Fn>>();
+
+	return ((...args: Parameters<Fn>) => {
+		const key = JSON.stringify(args);
+
+		if (!cache.has(key)) {
+			cache.set(key, fn(...args));
+		}
+
+		return cache.get(key);
+	}) as Fn;
+};

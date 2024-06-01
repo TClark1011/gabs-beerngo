@@ -1,9 +1,17 @@
-import { infoModalTargetBeerIdAtom, infoModalTargetBeerAtom } from "@/stores";
-import { Beer } from "@/types";
 import {
+	infoModalTargetBeerIdAtom,
+	infoModalTargetBeerAtom,
+	reviewWithBeerIdAtom,
+} from "@/stores";
+import { Beer, BeerReview } from "@/types";
+import { AddIcon, MinusIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import {
+	Box,
 	Button,
+	Center,
 	Divider,
 	Flex,
+	IconButton,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -13,9 +21,94 @@ import {
 	ModalOverlay,
 	Stack,
 	Text,
+	Textarea,
 } from "@chakra-ui/react";
 import { useAtom, useAtomValue } from "jotai";
-import { FC } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
+
+const ScoreControl: FC<{
+	score: number;
+	onScoreChange: (score: number) => void;
+}> = ({ score, onScoreChange }) => {
+	return (
+		<Flex alignItems="center" gap={2}>
+			<IconButton
+				aria-label="decrement score"
+				icon={<MinusIcon />}
+				onClick={() => onScoreChange(score - 1)}
+				isDisabled={score <= 0}
+				isRound
+			/>
+			<Button
+				borderRadius="100%"
+				boxSize={32}
+				as="div"
+				pointerEvents="none"
+				tabIndex={-1}
+				fontSize="5xl"
+			>
+				{score}
+			</Button>
+			<IconButton
+				isDisabled={score >= 10}
+				onClick={() => onScoreChange(score + 1)}
+				icon={<AddIcon />}
+				aria-label="increment"
+				isRound
+			/>
+		</Flex>
+	);
+};
+
+const ReviewSection: FC<{ beerId: number }> = ({ beerId }) => {
+	const targetBeerId = useAtomValue(infoModalTargetBeerIdAtom);
+	const modalIsOpen = !!targetBeerId;
+	const specificReviewAtom = useMemo(
+		() => reviewWithBeerIdAtom(beerId),
+		[beerId],
+	);
+	const [review, setReview] = useAtom(specificReviewAtom);
+
+	const [note, setNote] = useState(review.note);
+	const [score, setScore] = useState(review.score);
+
+	const localReview: BeerReview = useMemo(
+		() => ({ beerId, note, score }),
+		[beerId, note, score],
+	);
+
+	useEffect(() => {
+		setNote(review.note);
+	}, [review.note]);
+
+	useEffect(() => {
+		setScore(review.score);
+	}, [review.score]);
+
+	useEffect(() => {
+		if (!modalIsOpen) {
+			setReview(localReview);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [modalIsOpen]);
+
+	return (
+		<Stack>
+			<Text fontSize="xl" fontWeight="semibold">
+				Review{" "}
+			</Text>
+			<Center>
+				<ScoreControl score={score} onScoreChange={setScore} />
+			</Center>
+			<Textarea
+				placeholder="Note"
+				value={note}
+				onChange={(e) => setNote(e.target.value)}
+				rows={6}
+			/>
+		</Stack>
+	);
+};
 
 type BeerInfoField = {
 	label: string;
@@ -78,6 +171,8 @@ export const BeerInfoModal: FC = () => {
 								</Flex>
 							))}
 						</Stack>
+						<Divider my="4" />
+						<ReviewSection beerId={targetBeer.id} />
 					</ModalBody>
 					<ModalFooter>
 						<Button onClick={() => setTargetBeerId(null)}>Close</Button>

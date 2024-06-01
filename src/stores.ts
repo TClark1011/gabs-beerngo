@@ -1,20 +1,23 @@
 import { atomWithStorage } from "jotai/utils";
 import { atom } from "jotai";
-import { BingoBoard } from "@/types";
+import { BeerReview, BingoBoard } from "@/types";
 import { generateBingoBoard, unsafeGetBeerWithId } from "@/utils/bingo-helpers";
 import { produce } from "immer";
 import { BEERS } from "@/constants/data";
+import { memoize } from "@/utils/misc";
 
 export const previouslyPlayedBeerIdsAtom = atomWithStorage<number[]>(
 	"already-played-beer-ids",
 	[],
 );
+previouslyPlayedBeerIdsAtom.debugLabel = "previouslyPlayedBeerIds";
 
 export const playedBeersAtom = atom((get) => {
 	const beerIds = get(previouslyPlayedBeerIdsAtom);
 
 	return beerIds.map(unsafeGetBeerWithId);
 });
+playedBeersAtom.debugLabel = "playedBeers";
 
 export const unplayedBeerIdsAtom = atom((get) => {
 	const playedBeerIds = get(previouslyPlayedBeerIdsAtom);
@@ -23,9 +26,10 @@ export const unplayedBeerIdsAtom = atom((get) => {
 		(beer) => beer.id,
 	);
 });
+unplayedBeerIdsAtom.debugLabel = "unplayedBeerIds";
 
-export const beerIdHasBeenPlayedAtom = (beerId: number) =>
-	atom(
+export const beerIdHasBeenPlayedAtom = memoize((beerId: number) => {
+	const theAtom = atom(
 		(get) => get(previouslyPlayedBeerIdsAtom).includes(beerId),
 		(get, set, played: boolean) => {
 			const alreadyPlayedBearIds = get(previouslyPlayedBeerIdsAtom);
@@ -37,12 +41,18 @@ export const beerIdHasBeenPlayedAtom = (beerId: number) =>
 		},
 	);
 
+	theAtom.debugLabel = `beerIdHasBeenPlayed-${beerId}`;
+
+	return theAtom;
+});
+
 export const toggleBeerIdPlayedAtom = atom(null, (get, set, beerId: number) => {
 	const hasBeenPlayedAtom = beerIdHasBeenPlayedAtom(beerId);
 	const hasBeenPlayed = get(hasBeenPlayedAtom);
 
 	set(hasBeenPlayedAtom, !hasBeenPlayed);
 });
+toggleBeerIdPlayedAtom.debugLabel = "toggleBeerIdPlayed";
 
 export const bingoBoardAtom = atomWithStorage<BingoBoard>(
 	"bingo-board",
@@ -50,6 +60,7 @@ export const bingoBoardAtom = atomWithStorage<BingoBoard>(
 		playedBeerIds: [],
 	}),
 );
+bingoBoardAtom.debugLabel = "bingoBoard";
 
 export const bingoBoardTilesAtom = atom((get) => {
 	const { tiles } = get(bingoBoardAtom);
@@ -58,6 +69,7 @@ export const bingoBoardTilesAtom = atom((get) => {
 
 	return sortedTiles;
 });
+bingoBoardTilesAtom.debugLabel = "bingoBoardTiles";
 
 export const regenerateBoardAtom = atom(null, (get, set) => {
 	set(
@@ -67,9 +79,10 @@ export const regenerateBoardAtom = atom(null, (get, set) => {
 		}),
 	);
 });
+regenerateBoardAtom.debugLabel = "regenerateBoard";
 
-export const beerIdIsCheckedAtom = (beerId: number) =>
-	atom(
+export const beerIdIsCheckedAtom = memoize((beerId: number) => {
+	const theAtom = atom(
 		(get) =>
 			get(bingoBoardAtom).tiles.some(
 				(tile) => tile.beerId === beerId && tile.checked,
@@ -90,6 +103,11 @@ export const beerIdIsCheckedAtom = (beerId: number) =>
 		},
 	);
 
+	theAtom.debugLabel = `beerIdIsChecked-${beerId}`;
+
+	return theAtom;
+});
+
 export const toggleBeerCheckedAtom = atom(null, (get, set, beerId: number) => {
 	const checkedAtom = beerIdIsCheckedAtom(beerId);
 
@@ -97,20 +115,26 @@ export const toggleBeerCheckedAtom = atom(null, (get, set, beerId: number) => {
 
 	set(checkedAtom, !isChecked);
 });
+toggleBeerCheckedAtom.debugLabel = "toggleBeerChecked";
 
 export const availableBeersAtom = atom((get) => {
 	const { tiles } = get(bingoBoardAtom);
 
 	return tiles.map((tile) => unsafeGetBeerWithId(tile.beerId));
 });
+availableBeersAtom.debugLabel = "availableBeers";
 
 export const optionsDrawerIsOpenAtom = atom(false);
+optionsDrawerIsOpenAtom.debugLabel = "optionsDrawerIsOpen";
 
 export const availableBearsDrawerIsOpenAtom = atom(false);
+availableBearsDrawerIsOpenAtom.debugLabel = "availableBearsDrawerIsOpen";
 
 export const beerSearchAtom = atom("");
+beerSearchAtom.debugLabel = "beerSearch";
 
 export const infoModalTargetBeerIdAtom = atom<number | null>(null);
+infoModalTargetBeerIdAtom.debugLabel = "infoModalTargetBeerId";
 
 export const infoModalTargetBeerAtom = atom((get) => {
 	const beerId = get(infoModalTargetBeerIdAtom);
@@ -120,4 +144,60 @@ export const infoModalTargetBeerAtom = atom((get) => {
 	}
 
 	return unsafeGetBeerWithId(beerId);
+});
+infoModalTargetBeerAtom.debugLabel = "infoModalTargetBeer";
+
+export const beerReviewsAtom = atomWithStorage<BeerReview[]>(
+	"beer-reviews",
+	BEERS.map((beer) => ({
+		beerId: beer.id,
+		score: 0,
+		note: "",
+	})),
+);
+beerReviewsAtom.debugLabel = "beerReviews";
+
+type BeerReviewUpdateData = Partial<Omit<BeerReview, "beerId">>;
+
+const updateReviewAtom = atom(
+	null,
+	(get, set, reviewBeerId: number, data: BeerReviewUpdateData) => {
+		const reviews = get(beerReviewsAtom);
+
+		const updatedReviews = reviews.map((review) => {
+			if (review.beerId === reviewBeerId) {
+				return { ...review, ...data };
+			}
+
+			return review;
+		});
+
+		set(beerReviewsAtom, updatedReviews);
+	},
+);
+updateReviewAtom.debugLabel = "updateReview";
+
+export const reviewWithBeerIdAtom = memoize((beerId: number) => {
+	const theAtom = atom(
+		(get): BeerReview => {
+			const review = get(beerReviewsAtom).find(
+				(review) => review.beerId === beerId,
+			);
+
+			if (!review) {
+				throw new Error(`No review found for beerId: ${beerId}`);
+			}
+
+			return review;
+		},
+		(_, set, data: BeerReview) => {
+			if (data.beerId !== beerId) throw new Error("Invalid beerId");
+
+			set(updateReviewAtom, beerId, data);
+		},
+	);
+
+	theAtom.debugLabel = `reviewWithBeerId-${beerId}`;
+
+	return theAtom;
 });

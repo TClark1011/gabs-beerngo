@@ -17,3 +17,9 @@ export type BingoTile = {
 export type BingoBoard = {
 	tiles: BingoTile[];
 };
+
+export type BeerReview = {
+	beerId: number;
+	score: number;
+	note: string;
+};
