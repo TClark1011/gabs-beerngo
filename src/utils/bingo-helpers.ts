@@ -1,6 +1,6 @@
 import { BEERS, BOARD_TILES } from "@/constants/data";
 import { BingoBoard, BingoTile } from "@/types";
-import { pickFirstNItems, pickNRandomItems, shuffleArray } from "@/utils/misc";
+import { pickNRandomItems } from "@/utils/misc";
 
 export const generateBingoBoard = (): BingoBoard => {
 	const selectedBeers = pickNRandomItems(BEERS, BOARD_TILES);
