@@ -1,11 +1,16 @@
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { FC, useMemo } from "react";
 import { BEERS, BOARD_DIMENSION } from "@/constants/data";
-import { beerIdIsCheckedAtom, bingoBoardTilesAtom } from "@/stores";
+import {
+	beerIdIsCheckedAtom,
+	infoModalTargetBeerIdAtom,
+	bingoBoardTilesAtom,
+} from "@/stores";
 import { BingoTile } from "@/types";
 import { Button, SimpleGrid, Text } from "@chakra-ui/react";
 
 const Tile: FC<{ tile: BingoTile }> = ({ tile }) => {
+	const setInfoModalTargetBeerId = useSetAtom(infoModalTargetBeerIdAtom);
 	const isCheckedAtom = useMemo(
 		() => beerIdIsCheckedAtom(tile.beerId),
 		[tile.beerId],
@@ -33,6 +38,7 @@ const Tile: FC<{ tile: BingoTile }> = ({ tile }) => {
 			boxShadow="md"
 			pointerEvents={isChecked ? "auto" : "none"}
 			colorScheme={isChecked ? "blue" : "gray"}
+			onClick={() => setInfoModalTargetBeerId(tile.beerId)}
 		>
 			<Text fontWeight="black" opacity={isChecked ? 1 : 0}>
 				{matchingBeer.id}

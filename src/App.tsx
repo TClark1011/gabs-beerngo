@@ -1,3 +1,4 @@
+import { BeerInfoModal } from "@/components/beer-info-modal";
 import { BeerList } from "@/components/beer-list";
 import { Board } from "@/components/board";
 import { OptionsDrawer } from "@/components/options-drawer";
@@ -24,6 +25,7 @@ function App() {
 				</Box>
 			</Box>
 			<OptionsDrawer />
+			<BeerInfoModal />
 		</>
 	);
 }

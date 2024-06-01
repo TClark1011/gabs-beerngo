@@ -132,3 +132,15 @@ export const optionsDrawerIsOpenAtom = atom(false);
 export const availableBearsDrawerIsOpenAtom = atom(false);
 
 export const beerSearchAtom = atom("");
+
+export const infoModalTargetBeerIdAtom = atom<number | null>(null);
+
+export const infoModalTargetBeerAtom = atom((get) => {
+	const beerId = get(infoModalTargetBeerIdAtom);
+
+	if (!beerId) {
+		return null;
+	}
+
+	return unsafeGetBeerWithId(beerId);
+});

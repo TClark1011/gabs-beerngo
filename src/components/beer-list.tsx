@@ -1,8 +1,17 @@
 import { BEERS } from "@/constants/data";
+import { infoModalTargetBeerIdAtom } from "@/stores";
 import { Beer } from "@/types";
 import { matchesSearchQuery } from "@/utils/misc";
-import { Button, Checkbox, Stack, useColorModeValue } from "@chakra-ui/react";
-import { useAtom } from "jotai";
+import { InfoIcon } from "@chakra-ui/icons";
+import {
+	Button,
+	Checkbox,
+	Flex,
+	IconButton,
+	Stack,
+	useColorModeValue,
+} from "@chakra-ui/react";
+import { useAtom, useSetAtom } from "jotai";
 import { WritableAtom } from "jotai/experimental";
 import { FC, memo, useMemo } from "react";
 
@@ -10,6 +19,7 @@ const BeerRow: FC<{
 	beer: Beer;
 	checkedAtomComposer: (id: number) => WritableAtom<boolean, [boolean], void>;
 }> = ({ beer, checkedAtomComposer }) => {
+	const openInfoModalForId = useSetAtom(infoModalTargetBeerIdAtom);
 	const hasBeenPlayedAtom = useMemo(
 		() => checkedAtomComposer(beer.id),
 		[beer.id, checkedAtomComposer],
@@ -19,26 +29,39 @@ const BeerRow: FC<{
 	const checkboxBorderColor = useColorModeValue("gray.300", "gray.500");
 
 	return (
-		<Button
-			onClick={() => {
-				setHasBeenPlayed(!hasBeenPlayed);
-			}}
-			textAlign="left"
-			justifyContent="flex-start"
-			gap="2"
-			size="lg"
-			whiteSpace="normal"
-			h="max-content"
-			py="4"
-		>
-			<Checkbox
-				borderColor={checkboxBorderColor}
-				isChecked={hasBeenPlayed}
-				pointerEvents="none"
-				tabIndex={-1}
+		<Flex w="full" alignItems="center" gap="2">
+			<Button
+				onClick={() => {
+					setHasBeenPlayed(!hasBeenPlayed);
+				}}
+				textAlign="left"
+				justifyContent="flex-start"
+				size="lg"
+				whiteSpace="normal"
+				h="max-content"
+				py="4"
+				gap="2"
+				flexGrow={1}
+			>
+				<Checkbox
+					borderColor={checkboxBorderColor}
+					isChecked={hasBeenPlayed}
+					pointerEvents="none"
+					tabIndex={-1}
+				/>
+				{beer.id}. {beer.name}
+			</Button>
+			<IconButton
+				aria-label="View Beer Info"
+				icon={<InfoIcon />}
+				onClick={() => {
+					openInfoModalForId(beer.id);
+				}}
+				py="4"
+				isRound
+				variant="outline"
 			/>
-			{beer.id}. {beer.name}
-		</Button>
+		</Flex>
 	);
 };
 
