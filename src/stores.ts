@@ -1,10 +1,12 @@
 import { atomWithStorage } from "jotai/utils";
-import { atom } from "jotai";
+import { atom, getDefaultStore } from "jotai";
 import { BeerReview, BingoBoard } from "@/types";
 import { generateBingoBoard, unsafeGetBeerWithId } from "@/utils/bingo-helpers";
 import { produce } from "immer";
 import { BEERS } from "@/constants/data";
 import { memoize } from "@/utils/misc";
+
+export const jotaiStore = getDefaultStore();
 
 export const previouslyPlayedBeerIdsAtom = atomWithStorage<number[]>(
 	"already-played-beer-ids",
@@ -201,3 +203,13 @@ export const reviewWithBeerIdAtom = memoize((beerId: number) => {
 
 	return theAtom;
 });
+
+export const nonEmptyReviewsAtom = atom((get) => {
+	const reviews = get(beerReviewsAtom);
+
+	return reviews.filter((review) => review.score !== 0 || review.note !== "");
+});
+nonEmptyReviewsAtom.debugLabel = "nonEmptyReviews";
+
+export const reviewShareModalIsOpenAtom = atom(false);
+reviewShareModalIsOpenAtom.debugLabel = "shareReviewModalIsOpen";

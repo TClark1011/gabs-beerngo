@@ -1,5 +1,6 @@
 import { BEERS, BOARD_TILES, HARRY_CHOICE_QUOTA } from "@/constants/data";
-import { Beer, BingoBoard, BingoTile } from "@/types";
+import { Beer, BeerReview, BingoBoard, BingoTile } from "@/types";
+import { composeCompressor } from "@/utils/data-compression";
 import { splitArrayBy, pickNRandomItems, shuffleArray } from "@/utils/misc";
 
 type GenerateBingoBoardInput = {
@@ -65,4 +66,26 @@ export const unsafeGetBeerWithId = (beerId: number) => {
 	}
 
 	return beer;
+};
+
+export const reviewCompressor = composeCompressor<BeerReview[]>();
+
+export type ReviewDataSearchParams = {
+	data: string;
+	share?: boolean;
+};
+
+export const isReviewDataSearchParams = (
+	params: unknown,
+): params is ReviewDataSearchParams => {
+	if (typeof params !== "object" || params === null) {
+		return false;
+	}
+
+	const { data, share } = params as Record<string, unknown>;
+
+	return (
+		typeof data === "string" &&
+		(share === undefined || typeof share === "boolean")
+	);
 };

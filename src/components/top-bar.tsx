@@ -1,12 +1,59 @@
-import { optionsDrawerIsOpenAtom } from "@/stores";
-import { SettingsIcon } from "@chakra-ui/icons";
-import { DarkMode, Flex, IconButton, Text } from "@chakra-ui/react";
-import { useSetAtom } from "jotai";
+import { nonEmptyReviewsAtom, optionsDrawerIsOpenAtom } from "@/stores";
+import { EditIcon, SettingsIcon } from "@chakra-ui/icons";
+import {
+	Button,
+	DarkMode,
+	Flex,
+	HStack,
+	IconButton,
+	Text,
+} from "@chakra-ui/react";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { FC } from "react";
+import { Link, LinkProps, useMatchRoute } from "@tanstack/react-router";
+import { reviewCompressor } from "@/utils/bingo-helpers";
+
+const compressedNonEmptyReviewsAtom = atom((get) => {
+	const reviews = get(nonEmptyReviewsAtom);
+	const compressed = reviewCompressor.compress(reviews);
+	return compressed;
+});
+compressedNonEmptyReviewsAtom.debugLabel = "compressedNonEmptyReviews";
+
+const GotoReviewsButton: FC = () => {
+	const compressedReviews = useAtomValue(compressedNonEmptyReviewsAtom);
+
+	const linkProps = {
+		to: "/reviews",
+		search: {
+			data: compressedReviews,
+		},
+	} as const satisfies LinkProps;
+
+	const matchRoute = useMatchRoute();
+	const reviewsRouteMatch = matchRoute({
+		to: "/reviews",
+	});
+
+	return (
+		<Button
+			leftIcon={<EditIcon />}
+			variant="link"
+			as={Link}
+			{...linkProps}
+			isDisabled={!!reviewsRouteMatch}
+		>
+			Reviews
+		</Button>
+	);
+};
 
 export const TopBar: FC = () => {
 	const setOptionsDrawerIsOpen = useSetAtom(optionsDrawerIsOpenAtom);
-	// const bg = useColorModeValue("gray.100", "gray.700");
+	const matchRoute = useMatchRoute();
+	const reviewsRouteMatch = matchRoute({
+		to: "/reviews",
+	});
 
 	return (
 		<DarkMode>
@@ -18,13 +65,17 @@ export const TopBar: FC = () => {
 				justifyContent="space-between"
 				alignItems="center"
 			>
-				<IconButton
-					variant="ghost"
-					icon={<SettingsIcon />}
-					aria-label="Open Settings"
-					onClick={() => setOptionsDrawerIsOpen(true)}
-				/>
-				<Text as="h1" color="white" fontWeight="bold" fontSize="large">
+				<HStack>
+					<IconButton
+						variant="ghost"
+						icon={<SettingsIcon />}
+						aria-label="Open Settings"
+						onClick={() => setOptionsDrawerIsOpen(true)}
+						isDisabled={!!reviewsRouteMatch}
+					/>
+					<GotoReviewsButton />
+				</HStack>
+				<Text as={Link} color="white" fontWeight="bold" fontSize="large" to="/">
 					Beerngo
 				</Text>
 			</Flex>

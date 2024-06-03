@@ -2,32 +2,29 @@ import { BeerInfoModal } from "@/components/beer-info-modal";
 import { BeerList } from "@/components/beer-list";
 import { Board } from "@/components/board";
 import { OptionsDrawer } from "@/components/options-drawer";
-import { TopBar } from "@/components/top-bar";
 import { availableBeersAtom, beerIdIsCheckedAtom } from "@/stores";
-import { Box, Center } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
+import { FC } from "react";
 
-function App() {
+const MainPage: FC = () => {
 	const availableBeers = useAtomValue(availableBeersAtom);
 	return (
 		<>
-			<Box w="100vw" minH="100vh">
-				<TopBar />
-				<Box h="4" />
-				<Center>
-					<Board />
-				</Center>
-				<Box p="4">
-					<BeerList
-						beers={availableBeers}
-						checkedAtomComposer={beerIdIsCheckedAtom}
-					/>
-				</Box>
-			</Box>
+			<Center mb="4">
+				<Board />
+			</Center>
+			<BeerList
+				beers={availableBeers}
+				checkedAtomComposer={beerIdIsCheckedAtom}
+			/>
 			<OptionsDrawer />
 			<BeerInfoModal />
 		</>
 	);
-}
+};
 
-export default App;
+export const Route = createFileRoute("/")({
+	component: MainPage,
+});

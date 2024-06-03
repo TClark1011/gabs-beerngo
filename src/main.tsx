@@ -1,12 +1,13 @@
 import React, { FC, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { theme } from "@/theme";
 import { DevTools } from "@/dev-tools";
 import { useAtomValue } from "jotai";
 import { beerReviewsAtom } from "@/stores.ts";
 import { ErrorBoundary } from "react-error-boundary";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { routeTree } from "@/generated/route-tree.gen";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const SideEffects: FC = () => {
@@ -17,6 +18,16 @@ const SideEffects: FC = () => {
 
 	return null;
 };
+
+// Create a new router instance
+const router = createRouter({ routeTree });
+
+// Register the router instance for type safety
+declare module "@tanstack/react-router" {
+	interface Register {
+		router: typeof router;
+	}
+}
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
@@ -47,7 +58,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 				</Suspense>
 				<ColorModeScript initialColorMode={theme.config.initialColorMode} />
 				<SideEffects />
-				<App />
+				<RouterProvider router={router} />
 			</ChakraProvider>
 		</ErrorBoundary>
 	</React.StrictMode>,
