@@ -6,7 +6,7 @@ import {
 	getBeerWithIdOrThrow,
 } from "@/utils/bingo-helpers";
 import { produce } from "immer";
-import { BEERS } from "@/constants/data";
+import { BEERS, PADDLE_SIZE } from "@/constants/data";
 import { memoize, toggleArrayItem } from "@/utils/misc";
 
 export const jotaiStore = getDefaultStore();
@@ -116,23 +116,32 @@ regenerateBoardAtom.debugLabel = "regenerateBoard";
 
 export const beerIdIsCheckedAtom = memoize((beerId: number) => {
 	const theAtom = atom(
-		// (get) =>
-		// 	get(bingoBoardAtom).tiles.some(
-		// 		(tile) => tile.beerId === beerId && tile.checked,
-		// 	),
-		(_) => true,
-		(get, set, checked: boolean) => {
-			const newBoard = produce(get(bingoBoardAtom), (draft) => {
-				draft.tiles.forEach((tile) => {
-					if (tile.beerId === beerId) {
-						// tile.checked = checked;
-					}
-				});
-			});
+		(get) => get(bingoBoardAtom).checkedBeerIds.includes(beerId),
+		(get, set, shouldBeChecked: boolean) => {
+			const bingoBoard = get(bingoBoardAtom);
+			const isChecked = bingoBoard.checkedBeerIds.includes(beerId);
+			set(beerIdHasBeenPlayedAtom(beerId), shouldBeChecked);
 
-			set(bingoBoardAtom, newBoard);
-			if (checked) {
-				set(beerIdHasBeenPlayedAtom(beerId), true);
+			if (shouldBeChecked && !isChecked) {
+				set(
+					bingoBoardAtom,
+					produce(bingoBoard, (draftBingoBoard) => {
+						draftBingoBoard.checkedBeerIds.push(beerId);
+					}),
+				);
+				return;
+			}
+
+			if (!shouldBeChecked && isChecked) {
+				set(
+					bingoBoardAtom,
+					produce(bingoBoard, (draftBingoBoard) => {
+						draftBingoBoard.checkedBeerIds =
+							draftBingoBoard.checkedBeerIds.filter(
+								(checkedBeerId) => checkedBeerId !== beerId,
+							);
+					}),
+				);
 			}
 		},
 	);
@@ -257,6 +266,10 @@ export const toggleBeerIdInPaddleAtom = atom(null, (_, set, beerId: number) => {
 });
 toggleBeerIdInPaddleAtom.debugLabel = "toggleBeerIdInPaddle";
 
+export const paddleIsFullAtom = atom(
+	(get) => get(paddleBeerIdsAtom).length >= PADDLE_SIZE,
+);
+
 export const beerIdIsInPaddleAtom = memoize((beerId: number) => {
 	const theAtom = atom(
 		(get) => get(paddleBeersAtom).includes(beerId),
@@ -279,13 +292,13 @@ export const preferredNextSectionAtom = atomWithStorage<number | null>(
 );
 preferredNextSectionAtom.debugLabel = "preferredNextSection";
 
-export const markPaddleBeersAsPlayedAtom = atom(null, (get, set) => {
+export const markPaddleBeersAsCheckedAtom = atom(null, (get, set) => {
 	const paddleBeerIds = get(paddleBeerIdsAtom);
 	paddleBeerIds.forEach((beerId) => {
-		set(beerIdHasBeenPlayedAtom(beerId), true);
+		set(beerIdIsCheckedAtom(beerId), true);
 	});
 });
-markPaddleBeersAsPlayedAtom.debugLabel = "markPaddleBeersAsPlayedAtom";
+markPaddleBeersAsCheckedAtom.debugLabel = "markPaddleBeersAsCheckedAtom";
 
 const baseStarredBeerIdsAtom = atomWithStorage<number[]>(
 	"starred-beer-ids",

@@ -1,9 +1,9 @@
 import { BEERS } from "@/constants/data";
 import {
-	beerIdHasBeenPlayedAtom,
 	beerIdIsInPaddleAtom,
 	beerIdIsStarredAtom,
 	infoModalTargetBeerIdAtom,
+	paddleIsFullAtom,
 } from "@/stores";
 import { Beer } from "@/types";
 import { matchesSearchQuery } from "@/utils/misc";
@@ -21,20 +21,24 @@ import {
 	Text,
 	useColorModeValue,
 } from "@chakra-ui/react";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom, WritableAtom } from "jotai";
 import { FC, memo, useMemo } from "react";
 
 const BeerRow: FC<{
 	beer: Beer;
 	showPaddleButton: boolean;
 	showStarButton: boolean;
-}> = ({ beer, showPaddleButton, showStarButton }) => {
+	getBeerIdCheckedAtom: (
+		beerId: number,
+	) => WritableAtom<boolean, [boolean], any>;
+}> = ({ beer, showPaddleButton, showStarButton, getBeerIdCheckedAtom }) => {
 	const openInfoModalForId = useSetAtom(infoModalTargetBeerIdAtom);
 	const [hasBeenPlayed, setHasBeenPlayed] = useAtom(
-		beerIdHasBeenPlayedAtom(beer.id),
+		getBeerIdCheckedAtom(beer.id),
 	);
 	const [inPaddle, setInPaddle] = useAtom(beerIdIsInPaddleAtom(beer.id));
 	const [isStarred, setIsStarred] = useAtom(beerIdIsStarredAtom(beer.id));
+	const paddleIsFull = useAtomValue(paddleIsFullAtom);
 
 	const checkboxBorderColor = useColorModeValue("gray.300", "gray.500");
 
@@ -101,7 +105,7 @@ const BeerRow: FC<{
 					py="4"
 					isRound
 					variant="outline"
-					disabled={inPaddle}
+					disabled={inPaddle || paddleIsFull}
 				/>
 			)}
 		</Flex>
@@ -114,6 +118,9 @@ export const BeerList: FC<{
 	beers?: Beer[];
 	section?: number;
 	showStarButton?: boolean;
+	getBeerIdCheckedAtom: (
+		beerId: number,
+	) => WritableAtom<boolean, [boolean], any>;
 }> = memo(
 	({
 		searchQuery,
@@ -121,6 +128,7 @@ export const BeerList: FC<{
 		section,
 		showPaddleButton = false,
 		showStarButton = false,
+		getBeerIdCheckedAtom,
 	}) => {
 		const filteredBeers = useMemo(() => {
 			if (!searchQuery) {
@@ -154,6 +162,7 @@ export const BeerList: FC<{
 				<Stack gap="4">
 					{sortedAndFilteredBeers.map((beer) => (
 						<BeerRow
+							getBeerIdCheckedAtom={getBeerIdCheckedAtom}
 							showStarButton={showStarButton}
 							showPaddleButton={showPaddleButton}
 							beer={beer}

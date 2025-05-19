@@ -78,22 +78,12 @@ export const generateBingoBoard = ({
 
 	const nonBoardBeerIds = pickNRandomItems(finalBeerIds, LIST_EXTRA_BEERS);
 
-	const result = {
+	return {
 		tiles: shuffleArray(finalBeerIds).map(composeTileFromBeerId),
 		nonBoardBeerIds: nonBoardBeerIds,
 		section: selectedSection,
+		checkedBeerIds: [],
 	};
-	console.log("(bingo-helpers): ", {
-		unfilledSlots,
-		selectedBeerIds,
-		extraBeerIds,
-		sectionBeers,
-		finalBeerIds,
-		nonBoardBeerIds,
-		result,
-	});
-
-	return result;
 };
 
 export const getBeerWithIdOrThrow = (beerId: number) => {

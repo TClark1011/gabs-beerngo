@@ -11,7 +11,7 @@ import { PADDLE_SIZE } from "@/constants/data";
 import { fillToSize } from "@/utils/misc";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useSetAtom } from "jotai";
-import { markPaddleBeersAsPlayedAtom } from "@/stores";
+import { markPaddleBeersAsCheckedAtom } from "@/stores";
 
 export const Paddle: FC<{
 	beerIds: number[];
@@ -21,7 +21,7 @@ export const Paddle: FC<{
 		() => fillToSize(beerIds, PADDLE_SIZE, undefined),
 		[beerIds],
 	);
-	const markPaddleBeersAsPlayed = useSetAtom(markPaddleBeersAsPlayedAtom);
+	const markPaddleBeersAsPlayed = useSetAtom(markPaddleBeersAsCheckedAtom);
 	return (
 		<Card bg="whiteAlpha.200">
 			<CardBody>

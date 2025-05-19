@@ -5,6 +5,7 @@ import { OptionsDrawer } from "@/components/options-drawer";
 import { Paddle } from "@/components/paddle";
 import {
 	availableBeersAtom,
+	beerIdIsCheckedAtom,
 	bingoBoardSectionAtom,
 	paddleBeerIdsAtom,
 	toggleBeerIdInPaddleAtom,
@@ -26,7 +27,12 @@ const MainPage: FC = () => {
 			</Center>
 			<Paddle beerIds={paddleBeerIds} onToggle={togglePaddleBeerId} />
 			<Box h="2" />
-			<BeerList beers={availableBeers} section={section} showPaddleButton />
+			<BeerList
+				getBeerIdCheckedAtom={beerIdIsCheckedAtom}
+				beers={availableBeers}
+				section={section}
+				showPaddleButton
+			/>
 			<OptionsDrawer />
 			<BeerInfoModal />
 		</>

@@ -4,14 +4,14 @@ import { BEERS, BOARD_DIMENSION } from "@/constants/data";
 import {
 	infoModalTargetBeerIdAtom,
 	bingoBoardTilesAtom,
-	beerIdHasBeenPlayedAtom,
+	beerIdIsCheckedAtom,
 } from "@/stores";
 import { BingoTile } from "@/types";
 import { Button, SimpleGrid, Text } from "@chakra-ui/react";
 
 const Tile: FC<{ tile: BingoTile }> = ({ tile }) => {
 	const setInfoModalTargetBeerId = useSetAtom(infoModalTargetBeerIdAtom);
-	const isChecked = useAtomValue(beerIdHasBeenPlayedAtom(tile.beerId));
+	const isChecked = useAtomValue(beerIdIsCheckedAtom(tile.beerId));
 
 	useEffect(() => {
 		console.log("(board):", { isChecked });
