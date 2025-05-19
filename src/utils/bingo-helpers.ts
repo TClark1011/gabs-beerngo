@@ -1,7 +1,7 @@
-import { BEERS, BOARD_TILES, HARRY_CHOICE_QUOTA } from "@/constants/data";
-import { Beer, BeerReview, BingoBoard, BingoTile } from "@/types";
+import { BEERS, BOARD_TILES, LIST_EXTRA_BEERS } from "@/constants/data";
+import { BeerReview, BingoBoard, BingoTile } from "@/types";
 import { composeCompressor } from "@/utils/data-compression";
-import { splitArrayBy, pickNRandomItems, shuffleArray } from "@/utils/misc";
+import { pickNRandomItems, shuffleArray } from "@/utils/misc";
 
 type GenerateBingoBoardInput = {
 	playedBeerIds: number[];
@@ -13,7 +13,6 @@ const composeTileFromBeerId = (beerId: number, index: number): BingoTile => ({
 	checked: false,
 });
 
-const beerIsHarryChoice = (beer: Beer) => beer.harry;
 
 export const generateBingoBoard = ({
 	playedBeerIds,
@@ -21,44 +20,33 @@ export const generateBingoBoard = ({
 	const unplayedBeers = BEERS.filter(
 		(beer) => !playedBeerIds.includes(beer.id),
 	);
-	const [harryBeers, nonHarryBeers] = splitArrayBy(
-		unplayedBeers,
-		beerIsHarryChoice,
+
+	const selectedBeerIds = pickNRandomItems(
+		unplayedBeers.map((beer) => beer.id),
+		BOARD_TILES + LIST_EXTRA_BEERS
 	);
 
-	const harryBeerIds = harryBeers.map((beer) => beer.id);
-	const nonHarryBeerIds = nonHarryBeers.map((beer) => beer.id);
+	const unfilledSlots = BOARD_TILES - selectedBeerIds.length;
 
-	const selectedHarryBeerIds = pickNRandomItems(
-		harryBeerIds,
-		HARRY_CHOICE_QUOTA,
+	const extraBeerIds = pickNRandomItems(
+		playedBeerIds,
+		unfilledSlots,
+	)
+
+	const finalBeerIds = [...selectedBeerIds, ...extraBeerIds];
+
+	const nonBoardBeerIds = pickNRandomItems(
+		finalBeerIds,
+		LIST_EXTRA_BEERS,
 	);
-
-	const selectedNonHarryBeerIds = pickNRandomItems(
-		nonHarryBeerIds,
-		BOARD_TILES - selectedHarryBeerIds.length,
-	);
-	const selectedBeerIds = [...selectedHarryBeerIds, ...selectedNonHarryBeerIds];
-
-	const haveEnoughUnplayedBeers = selectedBeerIds.length >= BOARD_TILES;
-
-	if (!haveEnoughUnplayedBeers) {
-		const extraBeerIds = pickNRandomItems(
-			playedBeerIds,
-			BOARD_TILES - selectedBeerIds.length,
-		);
-		const finalBeerIds = [...selectedBeerIds, ...extraBeerIds];
-		return {
-			tiles: shuffleArray(finalBeerIds).map(composeTileFromBeerId),
-		};
-	}
 
 	return {
 		tiles: shuffleArray(selectedBeerIds).map(composeTileFromBeerId),
+		nonBoardBeerIds: nonBoardBeerIds,
 	};
 };
 
-export const unsafeGetBeerWithId = (beerId: number) => {
+export const getBeerWithIdOrThrow = (beerId: number) => {
 	const beer = BEERS.find((beer) => beer.id === beerId);
 
 	if (!beer) {

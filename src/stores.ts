@@ -1,7 +1,7 @@
 import { atomWithStorage } from "jotai/utils";
 import { atom, getDefaultStore } from "jotai";
 import { BeerReview, BingoBoard } from "@/types";
-import { generateBingoBoard, unsafeGetBeerWithId } from "@/utils/bingo-helpers";
+import { generateBingoBoard, getBeerWithIdOrThrow } from "@/utils/bingo-helpers";
 import { produce } from "immer";
 import { BEERS } from "@/constants/data";
 import { memoize } from "@/utils/misc";
@@ -17,7 +17,7 @@ previouslyPlayedBeerIdsAtom.debugLabel = "previouslyPlayedBeerIds";
 export const playedBeersAtom = atom((get) => {
 	const beerIds = get(previouslyPlayedBeerIdsAtom);
 
-	return beerIds.map(unsafeGetBeerWithId);
+	return beerIds.map(getBeerWithIdOrThrow);
 });
 playedBeersAtom.debugLabel = "playedBeers";
 
@@ -56,18 +56,32 @@ export const toggleBeerIdPlayedAtom = atom(null, (get, set, beerId: number) => {
 });
 toggleBeerIdPlayedAtom.debugLabel = "toggleBeerIdPlayed";
 
+const BINGO_BOARD_KEY = "bingo-board";
 export const bingoBoardAtom = atomWithStorage<BingoBoard>(
-	"bingo-board",
+	BINGO_BOARD_KEY,
 	generateBingoBoard({
 		playedBeerIds: [],
-	}),
+	})
 );
 bingoBoardAtom.debugLabel = "bingoBoard";
+if (!localStorage.getItem(BINGO_BOARD_KEY)) {
+	// Jotai doesn't save data into local storage until it has been updated,
+	// so we need to manually save the initial state
+	localStorage.setItem(
+		BINGO_BOARD_KEY,
+		JSON.stringify(
+			jotaiStore.get(bingoBoardAtom))
+	);
+}
 
 export const bingoBoardTilesAtom = atom((get) => {
-	const { tiles } = get(bingoBoardAtom);
+	const { tiles, nonBoardBeerIds } = get(bingoBoardAtom);
 
-	const sortedTiles = [...tiles].sort((a, b) => a.index - b.index);
+	const visibleTiles = tiles.filter(
+		(tile) => !nonBoardBeerIds.includes(tile.beerId),
+	);
+
+	const sortedTiles = [...visibleTiles].sort((a, b) => a.index - b.index);
 
 	return sortedTiles;
 });
@@ -122,7 +136,7 @@ toggleBeerCheckedAtom.debugLabel = "toggleBeerChecked";
 export const availableBeersAtom = atom((get) => {
 	const { tiles } = get(bingoBoardAtom);
 
-	return tiles.map((tile) => unsafeGetBeerWithId(tile.beerId));
+	return tiles.map((tile) => getBeerWithIdOrThrow(tile.beerId));
 });
 availableBeersAtom.debugLabel = "availableBeers";
 
@@ -145,7 +159,7 @@ export const infoModalTargetBeerAtom = atom((get) => {
 		return null;
 	}
 
-	return unsafeGetBeerWithId(beerId);
+	return getBeerWithIdOrThrow(beerId);
 });
 infoModalTargetBeerAtom.debugLabel = "infoModalTargetBeer";
 

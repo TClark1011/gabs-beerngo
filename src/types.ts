@@ -4,7 +4,6 @@ export type Beer = {
 	name: string;
 	flavour: string;
 	company: string;
-	harry: boolean;
 	state: string;
 };
 
@@ -16,7 +15,9 @@ export type BingoTile = {
 
 export type BingoBoard = {
 	tiles: BingoTile[];
+	nonBoardBeerIds: number[]; // ids of beers not on the board
 };
+
 
 export type BeerReview = {
 	beerId: number;

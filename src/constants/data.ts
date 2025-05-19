@@ -1,6 +1,10 @@
 import { type Beer } from "@/types";
 
-export const BOARD_DIMENSION = 5;
+export const BOARD_DIMENSION = 3;
+
+export const LIST_EXTRA_BEERS = 3;
+// We add extra beers to the list that are not on the board
+// to decrease the chance of a bingo
 
 export const BOARD_TILES = BOARD_DIMENSION ** 2;
 
@@ -16,7 +20,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CARAMEL AND RED GUM HONEY IPA",
 		"company": "CLIFTON HILL BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 2,
@@ -25,7 +28,6 @@ export const BEERS: Beer[] = [
 		"flavour": "ORANGE CHOCOLATE STOUT",
 		"company": "BREWMANITY BEER CO",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 3,
@@ -34,7 +36,6 @@ export const BEERS: Beer[] = [
 		"flavour": "SPAGHETTI ALE",
 		"company": "SIX STRING BREWING CO",
 		"state": "NSW",
-		"harry": true,
 	},
 	{
 		"id": 4,
@@ -43,7 +44,6 @@ export const BEERS: Beer[] = [
 		"flavour": "HOT CHOCOLATE PORTER",
 		"company": "THE BREW BARON BEER CO",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 5,
@@ -52,7 +52,6 @@ export const BEERS: Beer[] = [
 		"flavour": "NUTTY CRUMB COOKIE STOUT",
 		"company": "WIRED CRUMBS",
 		"state": "NZ",
-		"harry": false,
 	},
 	{
 		"id": 6,
@@ -61,7 +60,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MATCHA AND WHITE CHOCOLATE STOUT",
 		"company": "AETHEON BREWING",
 		"state": "WA",
-		"harry": true,
 	},
 	{
 		"id": 7,
@@ -70,7 +68,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHERRY AND WHITE CHOCOLATE ALE",
 		"company": "RED DUCK",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 8,
@@ -79,7 +76,6 @@ export const BEERS: Beer[] = [
 		"flavour": "HOPS AND GINGER AMBER ALE",
 		"company": "AKASHA BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 9,
@@ -88,7 +84,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PEACH AND CHILLIS",
 		"company": "CANOBOLAS BREWING CO",
 		"state": "NSW",
-		"harry": true,
 	},
 	{
 		"id": 10,
@@ -97,7 +92,6 @@ export const BEERS: Beer[] = [
 		"flavour": "BLACKBERRY GOSE SOUR",
 		"company": "WANDANA BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 11,
@@ -106,7 +100,6 @@ export const BEERS: Beer[] = [
 		"flavour": "TOFFEE, VANILLA, AND ORANGE AMBER ALE",
 		"company": "JETTY ROAD BREWERY",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 12,
@@ -115,7 +108,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PASSIONFRUIT, GRAPEFRUIT, AND CITRUS RED IPA",
 		"company": "KING RIVER BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 13,
@@ -124,7 +116,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHOCOLATE AND ORANGE PORTER",
 		"company": "HIKER BREWING CO",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 14,
@@ -133,7 +124,6 @@ export const BEERS: Beer[] = [
 		"flavour": "SHIRAZ GRAPE ALE",
 		"company": "TEMPLE BREWING CO",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 15,
@@ -142,7 +132,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHILLI PEPPER, BLACK PEPPER, AND SZECHUAN PEPPER IPA",
 		"company": "MOLLY ROSE BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 16,
@@ -151,7 +140,6 @@ export const BEERS: Beer[] = [
 		"flavour": "LEMON SHOCHU PALE LAGER",
 		"company": "STOMPING GROUND BREWING CO",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 17,
@@ -160,7 +148,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PINEAPPLE AND CHERRY KETTLE SOUR",
 		"company": "CAVALIER BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 18,
@@ -169,7 +156,6 @@ export const BEERS: Beer[] = [
 		"flavour": "RED MALTS HOPPY IPA",
 		"company": "RUSTY PENNY BREWING",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 19,
@@ -178,7 +164,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MALT AND HOPS PILSNER LAGER",
 		"company": "DEVILBEND FARM BEER CO",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 20,
@@ -187,7 +172,6 @@ export const BEERS: Beer[] = [
 		"flavour": "VANILLA BERRY PIE SOUR",
 		"company": "KAIJU! BEER",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 21,
@@ -196,7 +180,6 @@ export const BEERS: Beer[] = [
 		"flavour": "COCONUT AND CACAO RUM STOUT",
 		"company": "SEEKER BREWING",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 22,
@@ -205,7 +188,6 @@ export const BEERS: Beer[] = [
 		"flavour": "FRUITY SPICY HIGH CARB IPA",
 		"company": "GRIFFINS BREWING",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 23,
@@ -214,7 +196,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MULBERRY AND VANILLA PASTRY KETTLE SOUR",
 		"company": "PRECINCT BREWING",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 24,
@@ -224,7 +205,6 @@ export const BEERS: Beer[] = [
 			"NO FUCKING CLUE. DOES NOT SPECIFY. UNMODDED MALT AND LONG FERMENTATION PILSNER LAGER",
 		"company": "FRESHWATER BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 25,
@@ -233,7 +213,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PINEAPPLE AND NEIPA RUM RUNNER COCKTAIL BEER",
 		"company": "SMILEY BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 26,
@@ -242,7 +221,6 @@ export const BEERS: Beer[] = [
 		"flavour": "",
 		"company": "BLACKFLAG BREWERY",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 27,
@@ -251,7 +229,6 @@ export const BEERS: Beer[] = [
 		"flavour": "YUZU AND SHANDY",
 		"company": "URBAN ALLEY BREWERY",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 28,
@@ -260,7 +237,6 @@ export const BEERS: Beer[] = [
 		"flavour": "BISCUIT AND SPICE BELGIAN DUBBEL",
 		"company": "HOP HEN BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 29,
@@ -269,7 +245,6 @@ export const BEERS: Beer[] = [
 		"flavour": "OOLONG AND BLACK TEA FRUITY IPA",
 		"company": "BOWDEN BREWING CO",
 		"state": "SA",
-		"harry": true,
 	},
 	{
 		"id": 30,
@@ -278,7 +253,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CARAMEL, MALT, BANANA AND SPICE WEIZENBOCK",
 		"company": "CAPTAIN BLIGH'S BREWERY",
 		"state": "TAS",
-		"harry": false,
 	},
 	{
 		"id": 31,
@@ -287,7 +261,6 @@ export const BEERS: Beer[] = [
 		"flavour": "GUAVA AND INDIA PALE LAGER",
 		"company": "7TH DAY BREWERY",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 32,
@@ -296,7 +269,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CITRUS VANILLA MILKSHAKE IPA",
 		"company": "OCEAN REACH BREWING",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 33,
@@ -305,7 +277,6 @@ export const BEERS: Beer[] = [
 		"flavour": "HOREHOUND, ELDERBERRY AND HONEY GRUIT IPA",
 		"company": "SAUCE BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 34,
@@ -314,7 +285,6 @@ export const BEERS: Beer[] = [
 		"flavour": "KETTLE SOUR…SUSHI?",
 		"company": "TWOBAYS BREWING CO",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 35,
@@ -323,7 +293,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MEXICAN TOMATO LIME CHILLI LAGER",
 		"company": "BLACK HOPS BREWING",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 36,
@@ -332,7 +301,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CARAMEL AFFOGATO STOUT",
 		"company": "KING TIDE BREWING",
 		"state": "NSW",
-		"harry": true,
 	},
 	{
 		"id": 37,
@@ -341,7 +309,6 @@ export const BEERS: Beer[] = [
 		"flavour": "FRUITY SOUR PATCH KETTLE SOUR",
 		"company": "BOBS BEER",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 38,
@@ -350,7 +317,6 @@ export const BEERS: Beer[] = [
 		"flavour": "COCOA AND ALMOND PASTRY STOUT",
 		"company": "DEEDS BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 39,
@@ -359,7 +325,6 @@ export const BEERS: Beer[] = [
 		"flavour": "RICH PEATY SCOTCH ALE",
 		"company": "BADLANDS BREWERY",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 40,
@@ -368,7 +333,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MAI TAI STYLE BEER",
 		"company": "WAYWARD BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 41,
@@ -377,7 +341,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CITRUS TROPICAL HAZY IPA",
 		"company": "SHELTER BREWING CO",
 		"state": "WA",
-		"harry": false,
 	},
 	{
 		"id": 42,
@@ -386,7 +349,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHOCOLATE AND KELP OATMEAL STOUT",
 		"company": "AETHER BREWING",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 43,
@@ -395,7 +357,6 @@ export const BEERS: Beer[] = [
 		"flavour": "HOPPY LAGER",
 		"company": "FORREST BREWING CO",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 44,
@@ -404,7 +365,6 @@ export const BEERS: Beer[] = [
 		"flavour": "RASPBERRY AND ROSE PETAL PINK SOUR",
 		"company": "BROULEE BREWHOUSE",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 45,
@@ -413,7 +373,6 @@ export const BEERS: Beer[] = [
 		"flavour": "DARK CHOCOLATE, DASHI AND TAMARI SMOKED BEER",
 		"company": "POWDER MONKEY AUSTRALIA",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 46,
@@ -422,7 +381,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MARSHMALLOW AND STRAWBERRY PASTRY SOUR",
 		"company": "WORKING TITLE BREW CO",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 47,
@@ -431,7 +389,6 @@ export const BEERS: Beer[] = [
 		"flavour": "DARK RED BELGIAN ALE",
 		"company": "FRENCHIES BREWERY",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 48,
@@ -440,7 +397,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PEACH, LIME, AND CITRUS",
 		"company": "VALLEY HOPS BREWING",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 49,
@@ -449,7 +405,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PANDAN, CHOCOLATE, AND COFFEE PASTRY STOUT",
 		"company": "ROCKS BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 50,
@@ -458,7 +413,6 @@ export const BEERS: Beer[] = [
 		"flavour": "SPICE, HOPS, AND CHERRIES SAISON ALE",
 		"company": "BEERERATNE BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 51,
@@ -467,7 +421,6 @@ export const BEERS: Beer[] = [
 		"flavour": "GRAPEFRUIT, STONE FRUIT, AND PINE AMERICAN IPA",
 		"company": "WESTSIDE ALE WORKS",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 52,
@@ -476,7 +429,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PINAPPLE AND COCONUT",
 		"company": "COMMON GROUND BREWING",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 53,
@@ -485,7 +437,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CITRUS, PINE, AND EUCALYPTUS AMERICAN IPA",
 		"company": "NEWSTEAD BREWING CO",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 54,
@@ -494,7 +445,6 @@ export const BEERS: Beer[] = [
 		"flavour": "LEMON, KEY LIME, AND MERINGUE KETTLE SOUR",
 		"company": "GOOD FOLK BREWING",
 		"state": "NSW",
-		"harry": true,
 	},
 	{
 		"id": 55,
@@ -503,7 +453,6 @@ export const BEERS: Beer[] = [
 		"flavour": "DARK BERRY MALT BALTIC PORTER",
 		"company": "NOISY MINOR",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 56,
@@ -512,7 +461,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PEANUT BUTTER AND JELLY…SANDWICH BEER?",
 		"company": "SOAPBOX BEER",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 57,
@@ -521,7 +469,6 @@ export const BEERS: Beer[] = [
 		"flavour": "HONEY CORN FLAKES",
 		"company": "RAMBLERS ALE WORKS",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 58,
@@ -530,7 +477,6 @@ export const BEERS: Beer[] = [
 		"flavour": "BANANA CREAM PIE",
 		"company": "SLIPSTREAM BREWING CO",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 59,
@@ -539,7 +485,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHOCOLATE, COFFEE, VANILLA, AND CHERRIES PASTRY STOUT",
 		"company": "THE MILL BREWERY",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 60,
@@ -548,7 +493,6 @@ export const BEERS: Beer[] = [
 		"flavour": "SPICY, FRUITY, AND YEASTY BITCH!",
 		"company": "WEIHENSTEPHAN",
 		"state": "GER",
-		"harry": false,
 	},
 	{
 		"id": 61,
@@ -557,7 +501,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHOC, BUTTERSCOTCH PASTRY STOUT",
 		"company": "GOOD LAND BREWING CO",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 62,
@@ -566,7 +509,6 @@ export const BEERS: Beer[] = [
 		"flavour": "???",
 		"company": "???",
 		"state": "???",
-		"harry": false,
 	},
 	{
 		"id": 63,
@@ -575,7 +517,6 @@ export const BEERS: Beer[] = [
 		"flavour": "DARK LAGER SCHWARZBIER",
 		"company": "STRADDIE BREWING CO",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 64,
@@ -584,7 +525,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PASSIONFRUIT AND BLACKCURRENT PILSNER",
 		"company": "DAD AND DAVE'S BREWING",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 65,
@@ -593,7 +533,6 @@ export const BEERS: Beer[] = [
 		"flavour": "STONE FRUIT, PASSIONFRUIT, AND PINEAPPLE HAZY IPA",
 		"company": "SHOUT BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 66,
@@ -602,7 +541,6 @@ export const BEERS: Beer[] = [
 		"flavour": "GUAVA, PASSIONFRUIT, AND CRUSHED GOOSEBERRY COLD IPA",
 		"company": "DANGEROUS ALES",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 67,
@@ -611,7 +549,6 @@ export const BEERS: Beer[] = [
 		"flavour": "SPICY MARGARITA GOSE SOUR",
 		"company": "MOUNTAIN GOAT BEER",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 68,
@@ -620,7 +557,6 @@ export const BEERS: Beer[] = [
 		"flavour": "FUCKLOADS OF FRUIT, SOME LACTOSE AND VANILLA, MILKSHAKE IPA",
 		"company": "GREEN BEACON",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 69,
@@ -629,7 +565,6 @@ export const BEERS: Beer[] = [
 		"flavour": "WATERMELON AND HIBISCUS KETTLE SOURED BEER",
 		"company": "COPPERLODE BREWING CO",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 70,
@@ -638,7 +573,6 @@ export const BEERS: Beer[] = [
 		"flavour": "RAISIN, OAK, AND SPICED RUM UK BROWN ALE",
 		"company": "BOATROCKER BREWERS AND DISTILLERS",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 71,
@@ -647,7 +581,6 @@ export const BEERS: Beer[] = [
 		"flavour": "FANTA STYLE KETTLE SOUR",
 		"company": "REVEL BREWING CO",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 72,
@@ -656,7 +589,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CARAMEL, TOFFEE, VANILLA, MALT WHITE STOUT",
 		"company": "YOUR MATES BREWING CO",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 73,
@@ -665,7 +597,6 @@ export const BEERS: Beer[] = [
 		"flavour": "NO FUCKING CLUE. DOES NOT SPECIFY. HOPPY MALTY ALTBIER?",
 		"company": "BUCKET BREWERY",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 74,
@@ -674,7 +605,6 @@ export const BEERS: Beer[] = [
 		"flavour": "NO FUCKING CLUE. DOES NOT SPECIFY. NEIPA DOUBLE",
 		"company": "THE COASTAL BREWING COMPANY",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 75,
@@ -683,7 +613,6 @@ export const BEERS: Beer[] = [
 		"flavour": "OORAY PLUM, DARK MID. ",
 		"company": "THE SOCIAL BREWERS",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 76,
@@ -692,7 +621,6 @@ export const BEERS: Beer[] = [
 		"flavour": "BRAZILIAN BLOOD LIMEAIDE PASTRY SOUR",
 		"company": "NOODLEDOOF",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 77,
@@ -701,7 +629,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CITRUSY, BUILT LIKE A WEST COAST IPA. FERMENTED LIKE A KOLCHE.",
 		"company": "PSYCHO SUZIES BREWING",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 78,
@@ -710,7 +637,6 @@ export const BEERS: Beer[] = [
 		"flavour": "BISCOFF, CHOCOLATE, AND BISCUIT PORTER.",
 		"company": "BAD SHEPARD BREWING CO",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 79,
@@ -719,7 +645,6 @@ export const BEERS: Beer[] = [
 		"flavour": "NO FUCKING CLUE. DOES NOT SPECIFY. BREWING FOR A LONG TIME.",
 		"company": "BILLSON'S BREWERY",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 80,
@@ -728,7 +653,6 @@ export const BEERS: Beer[] = [
 		"flavour": "SPICED VOLCANIC SWEET POTATO COPPER ALE",
 		"company": "EARTH BEER COMPANY",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 81,
@@ -737,7 +661,6 @@ export const BEERS: Beer[] = [
 		"flavour": "PEAT SMOKED KELP IMPERIAL STOUT",
 		"company": "MORRISON BREWERY",
 		"state": "TAS",
-		"harry": false,
 	},
 	{
 		"id": 82,
@@ -746,7 +669,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHARDONNAY CO FERMENTED SOUR. KATH AND KIM TRIBUTE.",
 		"company": "RECKLESS BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 83,
@@ -755,7 +677,6 @@ export const BEERS: Beer[] = [
 		"flavour": "TROPICAL AND STONE FRUIT AUSTRALIAN IPA",
 		"company": "PRICKLY PETE AND THE WOLF BREWING CO",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 84,
@@ -764,7 +685,6 @@ export const BEERS: Beer[] = [
 		"flavour": "VANILLA AND CHERRY SOUR BARREL AGED ",
 		"company": "DOLLAR BILL BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 85,
@@ -773,7 +693,6 @@ export const BEERS: Beer[] = [
 		"flavour": "WEED, CITRUS, AND HOPS? BONGWATER WITH A BERRY PUMP.",
 		"company": "WOLF OF THE WILLOWS",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 86,
@@ -782,7 +701,6 @@ export const BEERS: Beer[] = [
 		"flavour": "VIENNA COFFEE LAGER MEETS CUSTARD TART",
 		"company": "THE SUBURBAN BREW",
 		"state": "SA",
-		"harry": true,
 	},
 	{
 		"id": 87,
@@ -791,7 +709,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHOCOLATE, VANILLA, BISCUITS, MARSHMALLOW",
 		"company": "BRIGHT BREWERY",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 88,
@@ -802,7 +719,6 @@ export const BEERS: Beer[] = [
 			"SELF DESCRIBED AS AN ABOMINATION OF A BEER. SEVERAL ALLERGY WARNINGS.",
 		"company": "SEVEN MILE BREWING CO",
 		"state": "NSW",
-		"harry": true,
 	},
 	{
 		"id": 89,
@@ -811,7 +727,6 @@ export const BEERS: Beer[] = [
 		"flavour": "APPLE, VANILLA, SPICE HEFEWEIZEN",
 		"company": "MISMATCH BREWING CO",
 		"state": "SA",
-		"harry": false,
 	},
 	{
 		"id": 90,
@@ -820,7 +735,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MARSHMALLOW, CHOCOLATE, AND COCONUT SMOKED PORTER",
 		"company": "BLACKMAN'S",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 91,
@@ -829,7 +743,6 @@ export const BEERS: Beer[] = [
 		"flavour": "APPLE PIE BISCUIT ALE. QUOTES JEFF GOLDBLUM IN DESCRIPTION.",
 		"company": "FUTURE MAGIC BREWING CO",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 92,
@@ -838,7 +751,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MALTS, GOLDING, AND HOPS. EXTRA SPECIAL BITTER.",
 		"company": "ST ANDREWS BEACH BREWERY",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 93,
@@ -847,7 +759,6 @@ export const BEERS: Beer[] = [
 		"flavour": "FRUIT PUNCH HAZY IPA",
 		"company": "MOUNTAIN CULTURE",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 94,
@@ -856,7 +767,6 @@ export const BEERS: Beer[] = [
 		"flavour": "WINE, FLORAL AND CITRUS",
 		"company": "THREE TAILS BREWING",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 95,
@@ -865,7 +775,6 @@ export const BEERS: Beer[] = [
 		"flavour": "TIKI ZOMBIE COCKTAIL STYLE TROPICAL KETTLE SOUR",
 		"company": "BATCH BREWING COMPANY",
 		"state": "NSW",
-		"harry": true,
 	},
 	{
 		"id": 96,
@@ -874,7 +783,6 @@ export const BEERS: Beer[] = [
 		"flavour": "ORANGE ZEST BLOOD ORANGE CITRUS IMPERIAL IPA",
 		"company": "HEROES AND VILLAINS",
 		"state": "WA",
-		"harry": false,
 	},
 	{
 		"id": 97,
@@ -883,7 +791,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CAMEL SHIT. NOT FUCKING KIDDING. VIBES OF WHISKEY, APPARENTLY.",
 		"company": "ROBE TOWN BREWERY",
 		"state": "SA",
-		"harry": false,
 	},
 	{
 		"id": 98,
@@ -892,7 +799,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CHERRY COLA SPECIALTY BEER",
 		"company": "CAPITAL BREWING CO",
 		"state": "ACT",
-		"harry": false,
 	},
 	{
 		"id": 99,
@@ -901,7 +807,6 @@ export const BEERS: Beer[] = [
 		"flavour": "JALAPENO BELGIAN SPECIALTY ALE",
 		"company": "ESCAPE BREWING",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 100,
@@ -910,7 +815,6 @@ export const BEERS: Beer[] = [
 		"flavour": "MACADAMIA AND WHITE MISO PORTER STOUT",
 		"company": "4 HEARTS BREWING",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 101,
@@ -919,7 +823,6 @@ export const BEERS: Beer[] = [
 		"flavour": "STRAWBERRIES AND WHITE WINE",
 		"company": "LADY BURRA BREWHOUSE",
 		"state": "SA",
-		"harry": true,
 	},
 	{
 		"id": 102,
@@ -928,7 +831,6 @@ export const BEERS: Beer[] = [
 		"flavour": "COFFEE, DARK CHOCOLATE, NUTS, AND BISCUITY STOUT.",
 		"company": "BREW DOG",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 103,
@@ -937,7 +839,6 @@ export const BEERS: Beer[] = [
 		"flavour": "CLASSIC PILSNER LAGER",
 		"company": "WILLIE THE BOATMAN",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 104,
@@ -946,7 +847,6 @@ export const BEERS: Beer[] = [
 		"flavour": "OAT CREAM CEREAL NEIPA",
 		"company": "MODUS",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 105,
@@ -955,7 +855,6 @@ export const BEERS: Beer[] = [
 		"flavour": "BANANA, ESPRESSO, AND SPICE BLACK SAISON",
 		"company": "IMPI BREWERS",
 		"state": "WA",
-		"harry": false,
 	},
 	{
 		"id": 106,
@@ -964,7 +863,6 @@ export const BEERS: Beer[] = [
 		"flavour": "STRAWBERRIES AND CREAM IMPERIAL KETTLE SOUR",
 		"company": "LOCAL BREWING CO",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 107,
@@ -973,7 +871,6 @@ export const BEERS: Beer[] = [
 		"flavour": "YUZU, SEA SALT, CITRUS HAZY IPA",
 		"company": "GARAGE PROJECT",
 		"state": "NZ",
-		"harry": false,
 	},
 	{
 		"id": 108,
@@ -983,7 +880,6 @@ export const BEERS: Beer[] = [
 			"CARAMELISED FIG, HAZELNUT, TOFFEE, AND STICKY DATE UK BROWN ALE",
 		"company": "MOFFAT BEACH BREWING CO",
 		"state": "QLD",
-		"harry": true,
 	},
 	{
 		"id": 109,
@@ -992,7 +888,6 @@ export const BEERS: Beer[] = [
 		"flavour": "ESPRESSO OATMEAL STOUT",
 		"company": "WARRANDYTE BREWING CO",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 110,
@@ -1001,7 +896,6 @@ export const BEERS: Beer[] = [
 		"flavour": "RAISIN, TOFFEE, TOBACCO, LEATHER, OAK, VANILLA BALTIC PORTER.",
 		"company": "ON POINT BREWERY",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 111,
@@ -1010,7 +904,6 @@ export const BEERS: Beer[] = [
 		"flavour": "COFFEE AND MACADAMIA IMPERIAL STOUT",
 		"company": "10 TOES BREWING",
 		"state": "QLD",
-		"harry": false,
 	},
 	{
 		"id": 112,
@@ -1019,7 +912,6 @@ export const BEERS: Beer[] = [
 		"flavour": "BACON, CITRUS, SPICE AMERICAN IPA",
 		"company": "STOIC BREWING",
 		"state": "NSW",
-		"harry": false,
 	},
 	{
 		"id": 113,
@@ -1028,7 +920,6 @@ export const BEERS: Beer[] = [
 		"flavour": "TACO FLAVOURED FAUCHBIER",
 		"company": "THE ZYTHOLOGIST",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 114,
@@ -1037,7 +928,6 @@ export const BEERS: Beer[] = [
 		"flavour": "COFFEE, CHOCOLATE, SWEET PASTRY STOUT",
 		"company": "CO-CONSPIRATORS BREWING",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 115,
@@ -1046,7 +936,6 @@ export const BEERS: Beer[] = [
 		"flavour": "RASPBERRY, DAISY, SHERBET SPECIALTY BEER",
 		"company": "MOON DOG",
 		"state": "VIC",
-		"harry": true,
 	},
 	{
 		"id": 116,
@@ -1055,7 +944,6 @@ export const BEERS: Beer[] = [
 		"flavour": "GINGER, VANILLA, SPICED OAK, HINTS OF ORANGE, COCKTAIL.",
 		"company": "MONKEY SHOULDER",
 		"state": "SCOTLAND",
-		"harry": false,
 	},
 	{
 		"id": 117,
@@ -1064,7 +952,6 @@ export const BEERS: Beer[] = [
 		"flavour": "EXACTLY AS IT SAYS. COCONUT, PINEAPPLE, AND RUM.",
 		"company": "MATSO",
 		"state": "???",
-		"harry": false,
 	},
 	{
 		"id": 118,
@@ -1073,7 +960,6 @@ export const BEERS: Beer[] = [
 		"flavour": "APPLE AND SPICE TRADITIONAL CIDER",
 		"company": "EDDIES CIDER",
 		"state": "VIC",
-		"harry": false,
 	},
 	{
 		"id": 119,
@@ -1082,7 +968,6 @@ export const BEERS: Beer[] = [
 		"flavour": "APPLE AND GINGER CIDER",
 		"company": "SPREYTON CIDER CO",
 		"state": "TAS",
-		"harry": false,
 	},
 	{
 		"id": 120,
@@ -1091,6 +976,5 @@ export const BEERS: Beer[] = [
 		"flavour": "???",
 		"company": "???",
 		"state": "???",
-		"harry": false,
 	},
 ];
