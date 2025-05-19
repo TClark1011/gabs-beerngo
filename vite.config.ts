@@ -11,7 +11,7 @@ export default defineConfig({
 		tsconfigPaths(),
 		TanStackRouterVite({
 			generatedRouteTree: "src/generated/route-tree.gen.ts",
-		}),
+		}) as any,
 		VitePWA({
 			registerType: "autoUpdate",
 			manifest: {

@@ -1,7 +1,10 @@
 import { atomWithStorage } from "jotai/utils";
 import { atom, getDefaultStore } from "jotai";
 import { BeerReview, BingoBoard } from "@/types";
-import { generateBingoBoard, getBeerWithIdOrThrow } from "@/utils/bingo-helpers";
+import {
+	generateBingoBoard,
+	getBeerWithIdOrThrow,
+} from "@/utils/bingo-helpers";
 import { produce } from "immer";
 import { BEERS } from "@/constants/data";
 import { memoize, toggleArrayItem } from "@/utils/misc";
@@ -66,7 +69,7 @@ export const bingoBoardAtom = atomWithStorage<BingoBoard>(
 		playedBeerIds: [],
 		sectionHistory: [],
 		section: null,
-	})
+	}),
 );
 bingoBoardAtom.debugLabel = "bingoBoard";
 if (!localStorage.getItem(BINGO_BOARD_KEY)) {
@@ -74,8 +77,7 @@ if (!localStorage.getItem(BINGO_BOARD_KEY)) {
 	// so we need to manually save the initial state
 	localStorage.setItem(
 		BINGO_BOARD_KEY,
-		JSON.stringify(
-			jotaiStore.get(bingoBoardAtom))
+		JSON.stringify(jotaiStore.get(bingoBoardAtom)),
 	);
 }
 
@@ -105,9 +107,8 @@ export const regenerateBoardAtom = atom(null, (get, set) => {
 	);
 	const { section } = get(bingoBoardAtom);
 	set(sectionHistoryAtom, (prev) => [...prev, section]);
-	set(paddleBeersAtom, [])
+	set(paddleBeersAtom, []);
 	set(preferredNextSectionAtom, null);
-
 });
 regenerateBoardAtom.debugLabel = "regenerateBoard";
 
@@ -242,26 +243,15 @@ nonEmptyReviewsAtom.debugLabel = "nonEmptyReviews";
 export const reviewShareModalIsOpenAtom = atom(false);
 reviewShareModalIsOpenAtom.debugLabel = "shareReviewModalIsOpen";
 
-const paddleBeersAtom = atomWithStorage<number[]>(
-	"paddle-beer-ids",
-	[],
-);
+const paddleBeersAtom = atomWithStorage<number[]>("paddle-beer-ids", []);
 paddleBeersAtom.debugLabel = "paddleBeerIds";
 
-export const paddleBeerIdsAtom = atom(get =>
-	get(paddleBeersAtom)
-);
+export const paddleBeerIdsAtom = atom((get) => get(paddleBeersAtom));
 paddleBeerIdsAtom.debugLabel = "paddleBeerIds";
 
-export const toggleBeerIdInPaddleAtom = atom(
-	null,
-	(_, set, beerId: number) => {
-		set(
-			paddleBeersAtom,
-			prev => toggleArrayItem(prev, beerId),
-		);
-	}
-);
+export const toggleBeerIdInPaddleAtom = atom(null, (_, set, beerId: number) => {
+	set(paddleBeersAtom, (prev) => toggleArrayItem(prev, beerId));
+});
 toggleBeerIdInPaddleAtom.debugLabel = "toggleBeerIdInPaddle";
 
 export const beerIdIsInPaddleAtom = memoize((beerId: number) => {
@@ -285,3 +275,10 @@ export const preferredNextSectionAtom = atomWithStorage<number | null>(
 	null,
 );
 preferredNextSectionAtom.debugLabel = "preferredNextSection";
+
+export const markPaddleBeersAsPlayedAtom = atom(null, (get, set) => {
+	const paddleBeerIds = get(paddleBeerIdsAtom);
+	paddleBeerIds.forEach((beerId) => {
+		set(beerIdHasBeenPlayedAtom(beerId), true);
+	});
+});
