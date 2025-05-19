@@ -1,3 +1,5 @@
+import { deepEqual } from '@tanstack/react-router';
+
 export const shuffleArray = <T>(array: T[]): T[] => {
 	const shuffledArray = [...array];
 	for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -71,3 +73,34 @@ export const memoize = <Fn extends (...args: any[]) => any>(fn: Fn): Fn => {
 		return cache.get(key);
 	}) as Fn;
 };
+
+export const toggleArrayItem = <T>(array: T[], item: T): T[] => {
+	const alreadyExists = array.some(i => deepEqual(i, item));
+	if (alreadyExists) {
+		return array.filter(i => !deepEqual(i, item));
+	} else {
+		return [...array, item];
+	}
+}
+
+export const range = (start: number, end: number): number[] => {
+	if (start > end) throw new Error("Start must be less than or equal to end");
+
+	const result: number[] = [];
+	for (let i = start; i <= end; i++) {
+		result.push(i);
+	}
+	return result;
+}
+
+export const fillToSize = <T, NewValue>(array: T[], size: number, fillValue: NewValue): (T | NewValue)[] => {
+	if (array.length >= size) return array;
+
+	const result: (T | NewValue)[] = [...array];
+
+	for (let i = array.length; i < size; i++) {
+		result.push(fillValue);
+	}
+
+	return result;
+}

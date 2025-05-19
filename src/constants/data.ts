@@ -1,5 +1,7 @@
 import { type Beer } from "@/types";
 
+export const PADDLE_SIZE = 5;
+
 export const BOARD_DIMENSION = 3;
 
 export const LIST_EXTRA_BEERS = 3;

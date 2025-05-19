@@ -4,7 +4,7 @@ import { BeerReview, BingoBoard } from "@/types";
 import { generateBingoBoard, getBeerWithIdOrThrow } from "@/utils/bingo-helpers";
 import { produce } from "immer";
 import { BEERS } from "@/constants/data";
-import { memoize } from "@/utils/misc";
+import { memoize, toggleArrayItem } from "@/utils/misc";
 
 export const jotaiStore = getDefaultStore();
 
@@ -103,6 +103,7 @@ export const regenerateBoardAtom = atom(null, (get, set) => {
 	);
 	const { section } = get(bingoBoardAtom);
 	set(sectionHistoryAtom, (prev) => [...prev, section]);
+	set(paddleBeersAtom, [])
 
 });
 regenerateBoardAtom.debugLabel = "regenerateBoard";
@@ -237,3 +238,41 @@ nonEmptyReviewsAtom.debugLabel = "nonEmptyReviews";
 
 export const reviewShareModalIsOpenAtom = atom(false);
 reviewShareModalIsOpenAtom.debugLabel = "shareReviewModalIsOpen";
+
+const paddleBeersAtom = atomWithStorage<number[]>(
+	"paddle-beer-ids",
+	[],
+);
+paddleBeersAtom.debugLabel = "paddleBeerIds";
+
+export const paddleBeerIdsAtom = atom(get =>
+	get(paddleBeersAtom)
+);
+paddleBeerIdsAtom.debugLabel = "paddleBeerIds";
+
+export const toggleBeerIdInPaddleAtom = atom(
+	null,
+	(_, set, beerId: number) => {
+		set(
+			paddleBeersAtom,
+			prev => toggleArrayItem(prev, beerId),
+		);
+	}
+);
+toggleBeerIdInPaddleAtom.debugLabel = "toggleBeerIdInPaddle";
+
+export const beerIdIsInPaddleAtom = memoize((beerId: number) => {
+	const theAtom = atom(
+		(get) => get(paddleBeersAtom).includes(beerId),
+		(get, set, inPaddle: boolean) => {
+			const alreadyInPaddle = get(theAtom);
+
+			if (alreadyInPaddle !== inPaddle) {
+				set(toggleBeerIdInPaddleAtom, beerId);
+			}
+		},
+	);
+	theAtom.debugLabel = `beerIdIsInPaddle-${beerId}`;
+
+	return theAtom;
+});

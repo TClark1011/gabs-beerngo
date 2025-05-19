@@ -2,7 +2,7 @@ import { BEERS } from '@/constants/data';
 import { infoModalTargetBeerIdAtom } from '@/stores';
 import { Beer } from '@/types';
 import { matchesSearchQuery } from '@/utils/misc';
-import { InfoIcon } from '@chakra-ui/icons';
+import { AddIcon, InfoIcon } from '@chakra-ui/icons';
 import { Button, Card, CardBody, Checkbox, Divider, Flex, HStack, IconButton, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useAtom, useSetAtom } from 'jotai';
 import { WritableAtom } from 'jotai';
@@ -11,10 +11,13 @@ import { FC, memo, useMemo } from 'react';
 const BeerRow: FC<{
   beer: Beer;
   checkedAtomComposer: (id: number) => WritableAtom<boolean, [boolean], void>;
-}> = ({ beer, checkedAtomComposer }) => {
+  inPaddleAtomComposer: (id: number) => WritableAtom<boolean, [boolean], void>;
+  withPaddleButton: boolean;
+}> = ({ beer, checkedAtomComposer, inPaddleAtomComposer, withPaddleButton }) => {
   const openInfoModalForId = useSetAtom(infoModalTargetBeerIdAtom);
   const hasBeenPlayedAtom = useMemo(() => checkedAtomComposer(beer.id), [beer.id, checkedAtomComposer]);
   const [hasBeenPlayed, setHasBeenPlayed] = useAtom(hasBeenPlayedAtom);
+  const [inPaddle, setInPaddle] = useAtom(inPaddleAtomComposer(beer.id));
 
   const checkboxBorderColor = useColorModeValue('gray.300', 'gray.500');
 
@@ -49,6 +52,19 @@ const BeerRow: FC<{
         isRound
         variant="outline"
       />
+      {withPaddleButton && (
+        <IconButton
+          aria-label="Add To Paddle"
+          icon={<AddIcon />}
+          onClick={() => {
+            setInPaddle(true);
+          }}
+          py="4"
+          isRound
+          variant="outline"
+          disabled={inPaddle}
+        />
+      )}
     </Flex>
   );
 };
@@ -56,9 +72,11 @@ const BeerRow: FC<{
 export const BeerList: FC<{
   searchQuery?: string;
   checkedAtomComposer: (id: number) => WritableAtom<boolean, [boolean], void>;
+  inPaddleAtomComposer: (id: number) => WritableAtom<boolean, [boolean], void>;
+  showPaddleButton?: boolean;
   beers?: Beer[];
   section?: number;
-}> = memo(({ searchQuery, checkedAtomComposer, beers = BEERS, section }) => {
+}> = memo(({ searchQuery, checkedAtomComposer, beers = BEERS, section, inPaddleAtomComposer, showPaddleButton = false }) => {
   const filteredBeers = useMemo(() => {
     if (!searchQuery) {
       return beers;
@@ -78,13 +96,6 @@ export const BeerList: FC<{
 
   return (
     <Stack divider={<Divider />}>
-      {/* {!!section && (
-        <HStack borderWidth="1px" borderColor="InactiveBorder" borderRadius="md" p="2">
-          <Text fontWeight="bold">Section</Text>
-          <Text>{section}</Text>
-          <Button isActive={false}>Hi</Button>
-        </HStack>
-      )} */}
       {!!section && (
         <Card bg="whiteAlpha.200">
           <CardBody>
@@ -97,7 +108,7 @@ export const BeerList: FC<{
       )}
       <Stack gap="4">
         {sortedAndFilteredBeers.map((beer) => (
-          <BeerRow checkedAtomComposer={checkedAtomComposer} beer={beer} key={beer.id} />
+          <BeerRow withPaddleButton={showPaddleButton} inPaddleAtomComposer={inPaddleAtomComposer} checkedAtomComposer={checkedAtomComposer} beer={beer} key={beer.id} />
         ))}
       </Stack>
     </Stack>
