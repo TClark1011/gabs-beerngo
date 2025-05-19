@@ -2,11 +2,12 @@ import { BEERS } from "@/constants/data";
 import {
 	beerIdHasBeenPlayedAtom,
 	beerIdIsInPaddleAtom,
+	beerIdIsStarredAtom,
 	infoModalTargetBeerIdAtom,
 } from "@/stores";
 import { Beer } from "@/types";
 import { matchesSearchQuery } from "@/utils/misc";
-import { AddIcon, InfoIcon } from "@chakra-ui/icons";
+import { AddIcon, InfoIcon, StarIcon } from "@chakra-ui/icons";
 import {
 	Button,
 	Card,
@@ -25,13 +26,15 @@ import { FC, memo, useMemo } from "react";
 
 const BeerRow: FC<{
 	beer: Beer;
-	withPaddleButton: boolean;
-}> = ({ beer, withPaddleButton }) => {
+	showPaddleButton: boolean;
+	showStarButton: boolean;
+}> = ({ beer, showPaddleButton, showStarButton }) => {
 	const openInfoModalForId = useSetAtom(infoModalTargetBeerIdAtom);
 	const [hasBeenPlayed, setHasBeenPlayed] = useAtom(
 		beerIdHasBeenPlayedAtom(beer.id),
 	);
 	const [inPaddle, setInPaddle] = useAtom(beerIdIsInPaddleAtom(beer.id));
+	const [isStarred, setIsStarred] = useAtom(beerIdIsStarredAtom(beer.id));
 
 	const checkboxBorderColor = useColorModeValue("gray.300", "gray.500");
 
@@ -63,7 +66,7 @@ const BeerRow: FC<{
 				</Text>
 			</Button>
 			<IconButton
-				aria-label="View Beer Info"
+				aria-label={`View Beer Info For ${beer.name}`}
 				icon={<InfoIcon />}
 				onClick={() => {
 					openInfoModalForId(beer.id);
@@ -72,9 +75,25 @@ const BeerRow: FC<{
 				isRound
 				variant="outline"
 			/>
-			{withPaddleButton && (
+			{showStarButton && (
 				<IconButton
-					aria-label="Add To Paddle"
+					aria-label={`${beer.name} is starred`}
+					icon={
+						<StarIcon
+							_checked={{
+								color: "gold",
+							}}
+							aria-checked={isStarred}
+						/>
+					}
+					onClick={() => setIsStarred(!isStarred)}
+					variant="ghost"
+					isRound
+				/>
+			)}
+			{showPaddleButton && (
+				<IconButton
+					aria-label={`Add ${beer.name} To Paddle`}
 					icon={<AddIcon />}
 					onClick={() => {
 						setInPaddle(true);
@@ -94,8 +113,15 @@ export const BeerList: FC<{
 	showPaddleButton?: boolean;
 	beers?: Beer[];
 	section?: number;
+	showStarButton?: boolean;
 }> = memo(
-	({ searchQuery, beers = BEERS, section, showPaddleButton = false }) => {
+	({
+		searchQuery,
+		beers = BEERS,
+		section,
+		showPaddleButton = false,
+		showStarButton = false,
+	}) => {
 		const filteredBeers = useMemo(() => {
 			if (!searchQuery) {
 				return beers;
@@ -128,7 +154,8 @@ export const BeerList: FC<{
 				<Stack gap="4">
 					{sortedAndFilteredBeers.map((beer) => (
 						<BeerRow
-							withPaddleButton={showPaddleButton}
+							showStarButton={showStarButton}
+							showPaddleButton={showPaddleButton}
 							beer={beer}
 							key={beer.id}
 						/>

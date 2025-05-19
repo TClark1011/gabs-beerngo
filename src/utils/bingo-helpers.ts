@@ -12,6 +12,7 @@ type GenerateBingoBoardInput = {
 	playedBeerIds: number[];
 	sectionHistory: number[];
 	section: number | null;
+	starredBeerIds: number[];
 };
 
 const composeTileFromBeerId = (beerId: number, index: number): BingoTile => ({
@@ -24,6 +25,7 @@ export const generateBingoBoard = ({
 	playedBeerIds,
 	sectionHistory,
 	section,
+	starredBeerIds,
 }: GenerateBingoBoardInput): BingoBoard => {
 	const unusedSections = BEER_SECTIONS.filter(
 		(sec) => !sectionHistory.includes(sec),
@@ -38,21 +40,37 @@ export const generateBingoBoard = ({
 
 	const sectionBeers = BEERS.filter((beer) => beer.section === selectedSection);
 
-	const unplayedBeers = sectionBeers.filter(
-		(beer) => !playedBeerIds.includes(beer.id),
-	);
+	const sectionStarredBeerIds = starredBeerIds
+		.filter((beerId) => !playedBeerIds.includes(beerId))
+		.filter((beerId) => sectionBeers.some((b) => b.id === beerId));
 
-	const selectedBeerIds = pickNRandomItems(
-		unplayedBeers.map((beer) => beer.id),
+	const selectedStarredBeerIds = pickNRandomItems(
+		sectionStarredBeerIds,
 		BEER_LIST_SIZE,
 	);
+
+	const unplayedBeers = sectionBeers.filter(
+		(beer) =>
+			!playedBeerIds.includes(beer.id) &&
+			!selectedStarredBeerIds.includes(beer.id),
+	);
+
+	const selectedBeerIds = [
+		...selectedStarredBeerIds,
+		...pickNRandomItems(
+			unplayedBeers.map((beer) => beer.id),
+			BEER_LIST_SIZE - selectedStarredBeerIds.length,
+		),
+	];
 
 	const unfilledSlots = BEER_LIST_SIZE - selectedBeerIds.length;
 
 	let extraBeerIds: number[] = [];
 	if (unfilledSlots > 0) {
-		const playedBeerIdsFromSection = playedBeerIds.filter((beerId) =>
-			sectionBeers.some((beer) => beer.id === beerId),
+		const playedBeerIdsFromSection = playedBeerIds.filter(
+			(beerId) =>
+				sectionBeers.some((beer) => beer.id === beerId) &&
+				!starredBeerIds.includes(beerId),
 		);
 		extraBeerIds = pickNRandomItems(playedBeerIdsFromSection, unfilledSlots);
 	}

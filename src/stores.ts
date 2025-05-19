@@ -69,6 +69,7 @@ export const bingoBoardAtom = atomWithStorage<BingoBoard>(
 		playedBeerIds: [],
 		sectionHistory: [],
 		section: null,
+		starredBeerIds: [],
 	}),
 );
 bingoBoardAtom.debugLabel = "bingoBoard";
@@ -103,6 +104,7 @@ export const regenerateBoardAtom = atom(null, (get, set) => {
 			playedBeerIds: get(previouslyPlayedBeerIdsAtom),
 			sectionHistory: get(sectionHistoryAtom),
 			section: get(preferredNextSectionAtom),
+			starredBeerIds: get(starredBeerIdsAtom),
 		}),
 	);
 	const { section } = get(bingoBoardAtom);
@@ -282,3 +284,31 @@ export const markPaddleBeersAsPlayedAtom = atom(null, (get, set) => {
 		set(beerIdHasBeenPlayedAtom(beerId), true);
 	});
 });
+markPaddleBeersAsPlayedAtom.debugLabel = "markPaddleBeersAsPlayedAtom";
+
+const baseStarredBeerIdsAtom = atomWithStorage<number[]>(
+	"starred-beer-ids",
+	[],
+);
+
+export const starredBeerIdsAtom = atom((get) => get(baseStarredBeerIdsAtom));
+
+export const beerIdIsStarredAtom = memoize((id: number) =>
+	atom(
+		(get) => {
+			const beerIds = get(baseStarredBeerIdsAtom);
+
+			return beerIds.includes(id);
+		},
+		(_, set, shouldBeStarred: boolean) => {
+			set(baseStarredBeerIdsAtom, (prev) => {
+				if (!prev.includes(id) && shouldBeStarred) {
+					return [...prev, id];
+				} else if (prev.includes(id) && !shouldBeStarred) {
+					return prev.filter((item) => item !== id);
+				}
+				return prev;
+			});
+		},
+	),
+);

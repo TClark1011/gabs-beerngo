@@ -91,7 +91,6 @@ export const OptionsDrawer: FC = () => {
 							</FormLabel>
 							<Select
 								id="preferred-next-section"
-								placeholder="Preferred Next Section"
 								variant="filled"
 								onChange={(e) => {
 									const value = e.target.value;
@@ -127,7 +126,7 @@ export const OptionsDrawer: FC = () => {
 							/>
 						</FormControl>
 					</VStack>
-					<BeerList searchQuery={deferredSearch} />
+					<BeerList searchQuery={deferredSearch} showStarButton />
 				</DrawerBody>
 			</DrawerContent>
 		</Drawer>
