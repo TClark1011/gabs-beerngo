@@ -1,8 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 import { FC, useDeferredValue } from "react";
 import {
-	beerIdHasBeenPlayedAtom,
-	beerIdIsInPaddleAtom,
 	beerSearchAtom,
 	optionsDrawerIsOpenAtom,
 	preferredNextSectionAtom,
@@ -129,11 +127,7 @@ export const OptionsDrawer: FC = () => {
 							/>
 						</FormControl>
 					</VStack>
-					<BeerList
-						checkedAtomComposer={beerIdHasBeenPlayedAtom}
-						searchQuery={deferredSearch}
-						inPaddleAtomComposer={beerIdIsInPaddleAtom}
-					/>
+					<BeerList searchQuery={deferredSearch} />
 				</DrawerBody>
 			</DrawerContent>
 		</Drawer>
