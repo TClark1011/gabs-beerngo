@@ -18,7 +18,6 @@ type GenerateBingoBoardInput = {
 const composeTileFromBeerId = (beerId: number, index: number): BingoTile => ({
 	beerId,
 	index,
-	checked: false,
 });
 
 export const generateBingoBoard = ({

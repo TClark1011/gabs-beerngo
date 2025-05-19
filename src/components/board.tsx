@@ -1,21 +1,21 @@
 import { useAtomValue, useSetAtom } from "jotai";
-import { FC, useMemo } from "react";
+import { FC, useEffect, useMemo } from "react";
 import { BEERS, BOARD_DIMENSION } from "@/constants/data";
 import {
-	beerIdIsCheckedAtom,
 	infoModalTargetBeerIdAtom,
 	bingoBoardTilesAtom,
+	beerIdHasBeenPlayedAtom,
 } from "@/stores";
 import { BingoTile } from "@/types";
 import { Button, SimpleGrid, Text } from "@chakra-ui/react";
 
 const Tile: FC<{ tile: BingoTile }> = ({ tile }) => {
 	const setInfoModalTargetBeerId = useSetAtom(infoModalTargetBeerIdAtom);
-	const isCheckedAtom = useMemo(
-		() => beerIdIsCheckedAtom(tile.beerId),
-		[tile.beerId],
-	);
-	const isChecked = useAtomValue(isCheckedAtom);
+	const isChecked = useAtomValue(beerIdHasBeenPlayedAtom(tile.beerId));
+
+	useEffect(() => {
+		console.log("(board):", { isChecked });
+	}, [isChecked]);
 
 	const matchingBeer = useMemo(() => {
 		const beer = BEERS.find((beer) => beer.id === tile.beerId);
@@ -49,6 +49,10 @@ const Tile: FC<{ tile: BingoTile }> = ({ tile }) => {
 
 export const Board = () => {
 	const tiles = useAtomValue(bingoBoardTilesAtom);
+
+	useEffect(() => {
+		console.log("(board):", { tiles });
+	}, [tiles]);
 	return (
 		<SimpleGrid columns={BOARD_DIMENSION} gap={2}>
 			{tiles.map((tile) => (

@@ -116,15 +116,16 @@ regenerateBoardAtom.debugLabel = "regenerateBoard";
 
 export const beerIdIsCheckedAtom = memoize((beerId: number) => {
 	const theAtom = atom(
-		(get) =>
-			get(bingoBoardAtom).tiles.some(
-				(tile) => tile.beerId === beerId && tile.checked,
-			),
+		// (get) =>
+		// 	get(bingoBoardAtom).tiles.some(
+		// 		(tile) => tile.beerId === beerId && tile.checked,
+		// 	),
+		(_) => true,
 		(get, set, checked: boolean) => {
 			const newBoard = produce(get(bingoBoardAtom), (draft) => {
 				draft.tiles.forEach((tile) => {
 					if (tile.beerId === beerId) {
-						tile.checked = checked;
+						// tile.checked = checked;
 					}
 				});
 			});

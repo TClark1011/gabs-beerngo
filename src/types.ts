@@ -10,7 +10,6 @@ export type Beer = {
 export type BingoTile = {
 	beerId: number;
 	index: number;
-	checked: boolean;
 };
 
 export type BingoBoard = {
