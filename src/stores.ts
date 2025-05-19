@@ -56,11 +56,15 @@ export const toggleBeerIdPlayedAtom = atom(null, (get, set, beerId: number) => {
 });
 toggleBeerIdPlayedAtom.debugLabel = "toggleBeerIdPlayed";
 
+const sectionHistoryAtom = atomWithStorage<number[]>("section-history", []);
+sectionHistoryAtom.debugLabel = "sectionHistory";
+
 const BINGO_BOARD_KEY = "bingo-board";
 export const bingoBoardAtom = atomWithStorage<BingoBoard>(
 	BINGO_BOARD_KEY,
 	generateBingoBoard({
 		playedBeerIds: [],
+		sectionHistory: [],
 	})
 );
 bingoBoardAtom.debugLabel = "bingoBoard";
@@ -73,6 +77,8 @@ if (!localStorage.getItem(BINGO_BOARD_KEY)) {
 			jotaiStore.get(bingoBoardAtom))
 	);
 }
+
+export const bingoBoardSectionAtom = atom((get) => get(bingoBoardAtom).section);
 
 export const bingoBoardTilesAtom = atom((get) => {
 	const { tiles, nonBoardBeerIds } = get(bingoBoardAtom);
@@ -92,8 +98,12 @@ export const regenerateBoardAtom = atom(null, (get, set) => {
 		bingoBoardAtom,
 		generateBingoBoard({
 			playedBeerIds: get(previouslyPlayedBeerIdsAtom),
+			sectionHistory: get(sectionHistoryAtom),
 		}),
 	);
+	const { section } = get(bingoBoardAtom);
+	set(sectionHistoryAtom, (prev) => [...prev, section]);
+
 });
 regenerateBoardAtom.debugLabel = "regenerateBoard";
 

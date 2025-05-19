@@ -14,6 +14,7 @@ export type BingoTile = {
 };
 
 export type BingoBoard = {
+	section: number;
 	tiles: BingoTile[];
 	nonBoardBeerIds: number[]; // ids of beers not on the board
 };
