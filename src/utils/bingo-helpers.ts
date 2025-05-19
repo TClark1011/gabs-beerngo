@@ -1,4 +1,9 @@
-import { BEERS, BOARD_TILES, LIST_EXTRA_BEERS } from "@/constants/data";
+import {
+	BEER_LIST_SIZE,
+	BEER_SECTIONS,
+	BEERS,
+	LIST_EXTRA_BEERS,
+} from "@/constants/data";
 import { BeerReview, BingoBoard, BingoTile } from "@/types";
 import { composeCompressor } from "@/utils/data-compression";
 import { pickNRandomItems, shuffleArray } from "@/utils/misc";
@@ -6,6 +11,7 @@ import { pickNRandomItems, shuffleArray } from "@/utils/misc";
 type GenerateBingoBoardInput = {
 	playedBeerIds: number[];
 	sectionHistory: number[];
+	section: number | null;
 };
 
 const composeTileFromBeerId = (beerId: number, index: number): BingoTile => ({
@@ -14,31 +20,23 @@ const composeTileFromBeerId = (beerId: number, index: number): BingoTile => ({
 	checked: false,
 });
 
-const MAX_SECTION = [...BEERS].sort(
-	(a, b) => b.section - a.section
-)[0].section!;
-
-const SECTIONS = [...Array(MAX_SECTION + 1).keys()].slice(1);
-
-
 export const generateBingoBoard = ({
 	playedBeerIds,
 	sectionHistory,
+	section,
 }: GenerateBingoBoardInput): BingoBoard => {
-	const unusedSections = SECTIONS.filter(
-		(section) => !sectionHistory.includes(section)
+	const unusedSections = BEER_SECTIONS.filter(
+		(sec) => !sectionHistory.includes(sec),
 	);
 	const availableSections = unusedSections.length
 		? unusedSections
-		: SECTIONS;
+		: BEER_SECTIONS;
 
-	const selectedSection = shuffleArray(availableSections)[0];
+	const selectedSection = section ?? shuffleArray(availableSections)[0];
 
 	if (!selectedSection) throw new Error("Unable to select section");
 
-	const sectionBeers = BEERS.filter(
-		(beer) => beer.section === selectedSection
-	);
+	const sectionBeers = BEERS.filter((beer) => beer.section === selectedSection);
 
 	const unplayedBeers = sectionBeers.filter(
 		(beer) => !playedBeerIds.includes(beer.id),
@@ -46,35 +44,39 @@ export const generateBingoBoard = ({
 
 	const selectedBeerIds = pickNRandomItems(
 		unplayedBeers.map((beer) => beer.id),
-		BOARD_TILES + LIST_EXTRA_BEERS
+		BEER_LIST_SIZE,
 	);
 
-	const unfilledSlots = BOARD_TILES - selectedBeerIds.length;
-
+	const unfilledSlots = BEER_LIST_SIZE - selectedBeerIds.length;
 
 	let extraBeerIds: number[] = [];
 	if (unfilledSlots > 0) {
-		const playedBeerIdsFromSection = playedBeerIds.filter(
-			beerId => sectionBeers.some(beer => beer.id === beerId)
-		)
-		extraBeerIds = pickNRandomItems(
-			playedBeerIdsFromSection,
-			unfilledSlots,
-		)
+		const playedBeerIdsFromSection = playedBeerIds.filter((beerId) =>
+			sectionBeers.some((beer) => beer.id === beerId),
+		);
+		extraBeerIds = pickNRandomItems(playedBeerIdsFromSection, unfilledSlots);
 	}
 
 	const finalBeerIds = [...selectedBeerIds, ...extraBeerIds];
 
-	const nonBoardBeerIds = pickNRandomItems(
-		finalBeerIds,
-		LIST_EXTRA_BEERS,
-	);
+	const nonBoardBeerIds = pickNRandomItems(finalBeerIds, LIST_EXTRA_BEERS);
 
-	return {
-		tiles: shuffleArray(selectedBeerIds).map(composeTileFromBeerId),
+	const result = {
+		tiles: shuffleArray(finalBeerIds).map(composeTileFromBeerId),
 		nonBoardBeerIds: nonBoardBeerIds,
 		section: selectedSection,
 	};
+	console.log("(bingo-helpers): ", {
+		unfilledSlots,
+		selectedBeerIds,
+		extraBeerIds,
+		sectionBeers,
+		finalBeerIds,
+		nonBoardBeerIds,
+		result,
+	});
+
+	return result;
 };
 
 export const getBeerWithIdOrThrow = (beerId: number) => {

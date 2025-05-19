@@ -65,6 +65,7 @@ export const bingoBoardAtom = atomWithStorage<BingoBoard>(
 	generateBingoBoard({
 		playedBeerIds: [],
 		sectionHistory: [],
+		section: null,
 	})
 );
 bingoBoardAtom.debugLabel = "bingoBoard";
@@ -99,11 +100,13 @@ export const regenerateBoardAtom = atom(null, (get, set) => {
 		generateBingoBoard({
 			playedBeerIds: get(previouslyPlayedBeerIdsAtom),
 			sectionHistory: get(sectionHistoryAtom),
+			section: get(preferredNextSectionAtom),
 		}),
 	);
 	const { section } = get(bingoBoardAtom);
 	set(sectionHistoryAtom, (prev) => [...prev, section]);
 	set(paddleBeersAtom, [])
+	set(preferredNextSectionAtom, null);
 
 });
 regenerateBoardAtom.debugLabel = "regenerateBoard";
@@ -276,3 +279,9 @@ export const beerIdIsInPaddleAtom = memoize((beerId: number) => {
 
 	return theAtom;
 });
+
+export const preferredNextSectionAtom = atomWithStorage<number | null>(
+	"preferred-next-section",
+	null,
+);
+preferredNextSectionAtom.debugLabel = "preferredNextSection";

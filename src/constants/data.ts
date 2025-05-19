@@ -10,6 +10,8 @@ export const LIST_EXTRA_BEERS = 3;
 
 export const BOARD_TILES = BOARD_DIMENSION ** 2;
 
+export const BEER_LIST_SIZE = BOARD_TILES + LIST_EXTRA_BEERS;
+
 export const HARRY_CHOICE_QUOTA = 5;
 // how many of harry's choices should be required
 // in each board
@@ -980,3 +982,10 @@ export const BEERS: Beer[] = [
 		"state": "???",
 	},
 ];
+
+export const BEER_SECTIONS: number[] = [];
+BEERS.forEach(beer => {
+	if (BEER_SECTIONS.includes(beer.section)) return;
+
+	BEER_SECTIONS.push(beer.section);
+})
