@@ -74,8 +74,12 @@ export const memoize = <Fn extends (...args: any[]) => any>(fn: Fn): Fn => {
 	}) as Fn;
 };
 
-export const toggleArrayItem = <T>(array: T[], item: T): T[] => {
-	const alreadyExists = array.some((i) => deepEqual(i, item));
+export const toggleArrayItem = <T>(
+	array: T[],
+	item: T,
+	equality: (a: T, b: T) => boolean,
+): T[] => {
+	const alreadyExists = array.some((i) => equality(i, item));
 	if (alreadyExists) {
 		return array.filter((i) => !deepEqual(i, item));
 	} else {
@@ -131,3 +135,6 @@ export const pickSatisfactoryItems = <T>(
 
 	return pickFirstNItems(satisfactoryItems, amount);
 };
+
+export const sortBy = <T>(arr: T[], getValue: (item: T) => number): T[] =>
+	arr.slice().sort((a, b) => getValue(a) - getValue(b));

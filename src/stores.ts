@@ -268,7 +268,9 @@ export const paddleBeerIdsAtom = atom((get) => get(paddleBeersAtom));
 paddleBeerIdsAtom.debugLabel = "paddleBeerIds";
 
 export const toggleBeerIdInPaddleAtom = atom(null, (_, set, beerId: number) => {
-	set(paddleBeersAtom, (prev) => toggleArrayItem(prev, beerId));
+	set(paddleBeersAtom, (prev) =>
+		toggleArrayItem(prev, beerId, (a, b) => a === b),
+	);
 });
 toggleBeerIdInPaddleAtom.debugLabel = "toggleBeerIdInPaddle";
 

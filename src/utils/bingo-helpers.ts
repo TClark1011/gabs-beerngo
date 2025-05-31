@@ -10,6 +10,7 @@ import {
 	pickFirstNItems,
 	pickSatisfactoryItems,
 	shuffleArray,
+	sortBy,
 } from "@/utils/misc";
 
 type GenerateBingoBoardInput = {
@@ -36,8 +37,17 @@ export const generateBingoBoard = ({
 	shuffledBeers,
 	shuffledSections,
 }: GenerateBingoBoardInput): BingoBoard => {
-	const unusedSections = BEER_SECTIONS.filter(
-		(sec) => !sectionHistory.includes(sec),
+	const sectionsSortedByStars = sortBy(shuffledSections, (section) => {
+		const beersInSection = shuffledBeers.filter(
+			(beer) => beer.section === section,
+		);
+		const starredBeersInSection = beersInSection.filter((beer) =>
+			starredBeerIds.includes(beer.id),
+		);
+		return starredBeersInSection.length;
+	});
+	const unusedSections = sectionsSortedByStars.filter(
+		(section) => !sectionHistory.includes(section),
 	);
 	const availableSections = unusedSections.length
 		? unusedSections
@@ -50,7 +60,6 @@ export const generateBingoBoard = ({
 		(beer) => beer.section === selectedSection,
 		(beer) => starredBeerIds.includes(beer.id),
 		(beer) => !playedBeerIds.includes(beer.id),
-		(beer) => !outOfStockBeerIds.includes(beer.id),
 	]);
 
 	const finalBeerIds = beers.map((beer) => beer.id);
