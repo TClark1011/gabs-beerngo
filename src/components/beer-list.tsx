@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BEERS } from "@/constants/data";
 import {
 	beerIdIsInPaddleAtom,
+	beerIdIsOutOfStockAtom,
 	beerIdIsStarredAtom,
 	infoModalTargetBeerIdAtom,
 	paddleIsFullAtom,
@@ -31,16 +33,32 @@ const BeerRow: FC<{
 	getBeerIdCheckedAtom: (
 		beerId: number,
 	) => WritableAtom<boolean, [boolean], any>;
-}> = ({ beer, showPaddleButton, showStarButton, getBeerIdCheckedAtom }) => {
+	showOutOfStock: boolean;
+}> = ({
+	beer,
+	showPaddleButton,
+	showStarButton,
+	getBeerIdCheckedAtom,
+	showOutOfStock,
+}) => {
 	const openInfoModalForId = useSetAtom(infoModalTargetBeerIdAtom);
 	const [hasBeenPlayed, setHasBeenPlayed] = useAtom(
 		getBeerIdCheckedAtom(beer.id),
 	);
 	const [inPaddle, setInPaddle] = useAtom(beerIdIsInPaddleAtom(beer.id));
 	const [isStarred, setIsStarred] = useAtom(beerIdIsStarredAtom(beer.id));
+	const [isOutOfStock, setIsOutOfStock] = useAtom(
+		beerIdIsOutOfStockAtom(beer.id),
+	);
 	const paddleIsFull = useAtomValue(paddleIsFullAtom);
 
 	const checkboxBorderColor = useColorModeValue("gray.300", "gray.500");
+
+	const showAsOutOfStock = useMemo(() => {
+		if (showOutOfStock) return isOutOfStock;
+
+		return false;
+	}, [isOutOfStock, showOutOfStock]);
 
 	return (
 		<Flex w="full" alignItems="center" gap="2">
@@ -57,6 +75,7 @@ const BeerRow: FC<{
 				px="4"
 				gap="2"
 				flexGrow={1}
+				disabled={showAsOutOfStock}
 			>
 				<Checkbox
 					borderColor={checkboxBorderColor}
@@ -65,10 +84,21 @@ const BeerRow: FC<{
 					tabIndex={-1}
 					flexShrink={0}
 				/>
-				<Text flexGrow={1}>
+				<Text
+					flexGrow={1}
+					textDecoration={showAsOutOfStock ? "line-through" : "none"}
+				>
 					{beer.id}. {beer.name}
 				</Text>
 			</Button>
+			{showOutOfStock && (
+				<Checkbox
+					isChecked={isOutOfStock}
+					onChange={(e) => setIsOutOfStock(e.target.checked)}
+					colorScheme="red"
+					mr="16px"
+				/>
+			)}
 			<IconButton
 				aria-label={`View Beer Info For ${beer.name}`}
 				icon={<InfoIcon />}
@@ -121,6 +151,7 @@ export const BeerList: FC<{
 	getBeerIdCheckedAtom: (
 		beerId: number,
 	) => WritableAtom<boolean, [boolean], any>;
+	showOutOfStock?: boolean;
 }> = memo(
 	({
 		searchQuery,
@@ -129,6 +160,7 @@ export const BeerList: FC<{
 		showPaddleButton = false,
 		showStarButton = false,
 		getBeerIdCheckedAtom,
+		showOutOfStock = false,
 	}) => {
 		const filteredBeers = useMemo(() => {
 			if (!searchQuery) {
@@ -167,6 +199,7 @@ export const BeerList: FC<{
 							showPaddleButton={showPaddleButton}
 							beer={beer}
 							key={beer.id}
+							showOutOfStock={showOutOfStock}
 						/>
 					))}
 				</Stack>

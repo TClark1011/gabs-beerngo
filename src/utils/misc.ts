@@ -1,4 +1,4 @@
-import { deepEqual } from '@tanstack/react-router';
+import { deepEqual } from "@tanstack/react-router";
 
 export const shuffleArray = <T>(array: T[]): T[] => {
 	const shuffledArray = [...array];
@@ -75,13 +75,13 @@ export const memoize = <Fn extends (...args: any[]) => any>(fn: Fn): Fn => {
 };
 
 export const toggleArrayItem = <T>(array: T[], item: T): T[] => {
-	const alreadyExists = array.some(i => deepEqual(i, item));
+	const alreadyExists = array.some((i) => deepEqual(i, item));
 	if (alreadyExists) {
-		return array.filter(i => !deepEqual(i, item));
+		return array.filter((i) => !deepEqual(i, item));
 	} else {
 		return [...array, item];
 	}
-}
+};
 
 export const range = (start: number, end: number): number[] => {
 	if (start > end) throw new Error("Start must be less than or equal to end");
@@ -91,9 +91,13 @@ export const range = (start: number, end: number): number[] => {
 		result.push(i);
 	}
 	return result;
-}
+};
 
-export const fillToSize = <T, NewValue>(array: T[], size: number, fillValue: NewValue): (T | NewValue)[] => {
+export const fillToSize = <T, NewValue>(
+	array: T[],
+	size: number,
+	fillValue: NewValue,
+): (T | NewValue)[] => {
 	if (array.length >= size) return array;
 
 	const result: (T | NewValue)[] = [...array];
@@ -103,4 +107,27 @@ export const fillToSize = <T, NewValue>(array: T[], size: number, fillValue: New
 	}
 
 	return result;
-}
+};
+
+export const pickSatisfactoryItems = <T>(
+	items: T[],
+	amount: number,
+	conditions: ((item: T) => boolean)[],
+): T[] => {
+	const activeConditions = [...conditions];
+	const satisfactoryItems: T[] = [];
+
+	while (activeConditions.length > 1 && satisfactoryItems.length < amount) {
+		const newItems = items.filter((item) => {
+			const isAlreadyPicked = satisfactoryItems.includes(item);
+			const isSatisfactory = activeConditions.every((condition) =>
+				condition(item),
+			);
+			return !isAlreadyPicked && isSatisfactory;
+		});
+		satisfactoryItems.push(...newItems);
+		activeConditions.pop();
+	}
+
+	return pickFirstNItems(satisfactoryItems, amount);
+};

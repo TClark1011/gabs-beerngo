@@ -6,8 +6,8 @@ import {
 	getBeerWithIdOrThrow,
 } from "@/utils/bingo-helpers";
 import { produce } from "immer";
-import { BEERS, PADDLE_SIZE } from "@/constants/data";
-import { memoize, toggleArrayItem } from "@/utils/misc";
+import { BEER_SECTIONS, BEERS, PADDLE_SIZE } from "@/constants/data";
+import { memoize, shuffleArray, toggleArrayItem } from "@/utils/misc";
 
 export const jotaiStore = getDefaultStore();
 
@@ -70,6 +70,9 @@ export const bingoBoardAtom = atomWithStorage<BingoBoard>(
 		sectionHistory: [],
 		section: null,
 		starredBeerIds: [],
+		outOfStockBeerIds: [],
+		shuffledBeers: shuffleArray(BEERS),
+		shuffledSections: shuffleArray(BEER_SECTIONS),
 	}),
 );
 bingoBoardAtom.debugLabel = "bingoBoard";
@@ -101,10 +104,13 @@ export const regenerateBoardAtom = atom(null, (get, set) => {
 	set(
 		bingoBoardAtom,
 		generateBingoBoard({
+			shuffledBeers: shuffleArray(BEERS),
 			playedBeerIds: get(previouslyPlayedBeerIdsAtom),
 			sectionHistory: get(sectionHistoryAtom),
 			section: get(preferredNextSectionAtom),
 			starredBeerIds: get(starredBeerIdsAtom),
+			outOfStockBeerIds: get(beerIdsOutOfStockAtom),
+			shuffledSections: shuffleArray(BEER_SECTIONS),
 		}),
 	);
 	const { section } = get(bingoBoardAtom);
@@ -319,6 +325,31 @@ export const beerIdIsStarredAtom = memoize((id: number) =>
 				if (!prev.includes(id) && shouldBeStarred) {
 					return [...prev, id];
 				} else if (prev.includes(id) && !shouldBeStarred) {
+					return prev.filter((item) => item !== id);
+				}
+				return prev;
+			});
+		},
+	),
+);
+
+export const beerIdsOutOfStockAtom = atomWithStorage<number[]>(
+	"beer-ids-out-of-stock",
+	[],
+);
+
+export const beerIdIsOutOfStockAtom = memoize((id: number) =>
+	atom(
+		(get) => {
+			const beerIds = get(beerIdsOutOfStockAtom);
+
+			return beerIds.includes(id);
+		},
+		(_, set, shouldBeOutOfStock: boolean) => {
+			set(beerIdsOutOfStockAtom, (prev) => {
+				if (!prev.includes(id) && shouldBeOutOfStock) {
+					return [...prev, id];
+				} else if (prev.includes(id) && !shouldBeOutOfStock) {
 					return prev.filter((item) => item !== id);
 				}
 				return prev;

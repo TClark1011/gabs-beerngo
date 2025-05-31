@@ -4,15 +4,22 @@ import {
 	BEERS,
 	LIST_EXTRA_BEERS,
 } from "@/constants/data";
-import { BeerReview, BingoBoard, BingoTile } from "@/types";
+import { Beer, BeerReview, BingoBoard, BingoTile } from "@/types";
 import { composeCompressor } from "@/utils/data-compression";
-import { pickNRandomItems, shuffleArray } from "@/utils/misc";
+import {
+	pickFirstNItems,
+	pickSatisfactoryItems,
+	shuffleArray,
+} from "@/utils/misc";
 
 type GenerateBingoBoardInput = {
+	shuffledBeers: Beer[];
 	playedBeerIds: number[];
 	sectionHistory: number[];
 	section: number | null;
 	starredBeerIds: number[];
+	outOfStockBeerIds: number[];
+	shuffledSections: number[];
 };
 
 const composeTileFromBeerId = (beerId: number, index: number): BingoTile => ({
@@ -25,58 +32,29 @@ export const generateBingoBoard = ({
 	sectionHistory,
 	section,
 	starredBeerIds,
+	outOfStockBeerIds,
+	shuffledBeers,
+	shuffledSections,
 }: GenerateBingoBoardInput): BingoBoard => {
 	const unusedSections = BEER_SECTIONS.filter(
 		(sec) => !sectionHistory.includes(sec),
 	);
 	const availableSections = unusedSections.length
 		? unusedSections
-		: BEER_SECTIONS;
+		: shuffledSections;
 
-	const selectedSection = section ?? shuffleArray(availableSections)[0];
+	const selectedSection = section ?? availableSections[0];
 
-	if (!selectedSection) throw new Error("Unable to select section");
+	const beers = pickSatisfactoryItems(shuffledBeers, BEER_LIST_SIZE, [
+		(beer) => !outOfStockBeerIds.includes(beer.id),
+		(beer) => beer.section === selectedSection,
+		(beer) => starredBeerIds.includes(beer.id),
+		(beer) => !playedBeerIds.includes(beer.id),
+		(beer) => !outOfStockBeerIds.includes(beer.id),
+	]);
 
-	const sectionBeers = BEERS.filter((beer) => beer.section === selectedSection);
-
-	const sectionStarredBeerIds = starredBeerIds
-		.filter((beerId) => !playedBeerIds.includes(beerId))
-		.filter((beerId) => sectionBeers.some((b) => b.id === beerId));
-
-	const selectedStarredBeerIds = pickNRandomItems(
-		sectionStarredBeerIds,
-		BEER_LIST_SIZE,
-	);
-
-	const unplayedBeers = sectionBeers.filter(
-		(beer) =>
-			!playedBeerIds.includes(beer.id) &&
-			!selectedStarredBeerIds.includes(beer.id),
-	);
-
-	const selectedBeerIds = [
-		...selectedStarredBeerIds,
-		...pickNRandomItems(
-			unplayedBeers.map((beer) => beer.id),
-			BEER_LIST_SIZE - selectedStarredBeerIds.length,
-		),
-	];
-
-	const unfilledSlots = BEER_LIST_SIZE - selectedBeerIds.length;
-
-	let extraBeerIds: number[] = [];
-	if (unfilledSlots > 0) {
-		const playedBeerIdsFromSection = playedBeerIds.filter(
-			(beerId) =>
-				sectionBeers.some((beer) => beer.id === beerId) &&
-				!starredBeerIds.includes(beerId),
-		);
-		extraBeerIds = pickNRandomItems(playedBeerIdsFromSection, unfilledSlots);
-	}
-
-	const finalBeerIds = [...selectedBeerIds, ...extraBeerIds];
-
-	const nonBoardBeerIds = pickNRandomItems(finalBeerIds, LIST_EXTRA_BEERS);
+	const finalBeerIds = beers.map((beer) => beer.id);
+	const nonBoardBeerIds = pickFirstNItems(finalBeerIds, LIST_EXTRA_BEERS);
 
 	return {
 		tiles: shuffleArray(finalBeerIds).map(composeTileFromBeerId),

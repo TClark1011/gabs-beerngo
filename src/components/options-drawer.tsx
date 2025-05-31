@@ -131,6 +131,7 @@ export const OptionsDrawer: FC = () => {
 						getBeerIdCheckedAtom={beerIdHasBeenPlayedAtom}
 						searchQuery={deferredSearch}
 						showStarButton
+						showOutOfStock
 					/>
 				</DrawerBody>
 			</DrawerContent>
